@@ -24,7 +24,7 @@ def submit_diary():
     content = data['content']
 
     # 保存日记到文件
-    with open('diary.txt', 'a', encoding='utf-8') as f:
+    with open('/root/git_rep/web/diary.txt', 'a', encoding='utf-8') as f:
         f.write(content + '\n')
 
     # 返回保存的日记
@@ -34,7 +34,7 @@ def submit_diary():
 @app.route('/get_diaries', methods=['GET'])
 def get_diaries():
     # 从文件中读取所有日记
-    with open('diary.txt', 'r', encoding='utf-8') as f:
+    with open('/root/git_rep/web/diary.txt', 'r', encoding='utf-8') as f:
         diaries = [{'content': line.strip()} for line in f]
 
     # 返回日记列表
