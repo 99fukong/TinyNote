@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Diary</title>
+</head>
+<body>
+    <h1>My Diary</h1>
+
+    <form id="diary-form">
+        <textarea id="diary-content" rows="5" cols="50"></textarea>
+        <br>
+        <button type="submit">Save</button>
+    </form>
+
+    <div id="diary-list"></div>
+
+    <script>
+        // 获取日记列表
+        fetch('/get_diaries')
+            .then(response => response.json())
+            .then(diaries => {
+                // 在页面上显示日记列表
+                const diaryList = document.getElementById('diary-list');
+                diaries.forEach(diary => {
+                    const content = diary.content;
+                    const p = document.createElement('p');
+                    p.textContent = content;
+                    diaryList.appendChild(p);
+                });
+            });
+
+        // 提交日记表单
+        const form = document.getElementById('diary-form');
+        form.addEventListener('submit', event => {
+            event.preventDefault();
+
+            const content = document.getElementById('diary-content').value;
+
+            // 发送日记内容到后台
+            fetch('/submit_diary', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({content})
+            })
+            .then(response => response.json())
+            .then(diary => {
+                // 在页面上显示新保存的日记
+                const content = diary.content;
+                const p = document.createElement('p');
+                p.textContent = content;
+                const diaryList = document.getElementById('diary-list');
+                diaryList.appendChild(p);
+            });
+        });
+    </script>
+</body>
+</html>
