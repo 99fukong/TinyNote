@@ -49,6 +49,7 @@
                 // 在页面上显示新保存的日记
                 const content = diary.content;
                 const p = document.createElement('p');
+                p.style.whiteSpace = "pre";
                 p.textContent = content;
                 const diaryList = document.getElementById('diary-list');
                 <!-- diaryList.appendChild(p); -->
