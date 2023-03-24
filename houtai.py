@@ -27,11 +27,11 @@ def submit_diary():
     with open(CONF.DIARY_TXT_DIR, 'r+', encoding='utf-8') as file:
         old_content = file.read()
         file.seek(0)
-        print(content+'\n\n\n' + old_content)
-        file.write(content+'\n' + old_content)
+        # print(content+'\n\n\n' + old_content)
+        file.write(content+'\n********************************\n' + old_content)
 
     # 返回保存的日记
-    diary = {'content': content}
+    diary = {'content': content+'\n********************************\n'}
     return jsonify(diary)
 
 @app.route('/get_diaries', methods=['GET'])
