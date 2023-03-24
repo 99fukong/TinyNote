@@ -51,7 +51,13 @@
                 const p = document.createElement('p');
                 p.textContent = content;
                 const diaryList = document.getElementById('diary-list');
-                diaryList.appendChild(p);
+                <!-- diaryList.appendChild(p); -->
+                // 将p元素放在diaryList第一个元素的前面，即p元素放在最前面
+                diaryList.insertBefore(p, diaryList.firstChild);
+                
+                // 清空表单
+                const form = document.getElementById('diary-form');
+                form.reset();
             });
         });
     </script>

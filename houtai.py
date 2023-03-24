@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, render_template
+import conf as CONF
 
-# app = Flask(__name__)
-app = Flask(__name__, template_folder='/root/git_rep/web/templates')
+app = Flask(__name__, template_folder=CONF.TEMPLATE_DIR)
 
 @app.route('/')
 def index():
@@ -23,9 +23,12 @@ def submit_diary():
     # 获取日记内容
     content = data['content']
 
-    # 保存日记到文件
-    with open('/root/git_rep/web/diary.txt', 'a', encoding='utf-8') as f:
-        f.write(content + '\n')
+    # 将新的内容添加到diary.txt 最前面       
+    with open(CONF.DIARY_TXT_DIR, 'r+', encoding='utf-8') as file:
+        old_content = file.read()
+        file.seek(0)
+        print(content+'\n' + old_content)
+        file.write(content+'\n' + old_content)
 
     # 返回保存的日记
     diary = {'content': content}
@@ -33,11 +36,14 @@ def submit_diary():
 
 @app.route('/get_diaries', methods=['GET'])
 def get_diaries():
+
     # 从文件中读取所有日记
-    with open('/root/git_rep/web/diary.txt', 'r', encoding='utf-8') as f:
+    with open(CONF.DIARY_TXT_DIR, 'r', encoding='utf-8') as f:
         diaries = [{'content': line.strip()} for line in f]
 
     # 返回日记列表
+    print(diaries)
+    # print(jsonify(diaries))
     return jsonify(diaries)
 
 if __name__ == '__main__':
