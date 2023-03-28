@@ -28,13 +28,18 @@
                     diaryList.appendChild(p);
                 });
             });
-
+        
+        const dateObj = new Date();
+        const dateStr = dateObj.toLocaleDateString(); // 获取当前日期字符串
+        const timeStr = dateObj.toLocaleTimeString(); // 获取当前时间字符串
         // 提交日记表单
         const form = document.getElementById('diary-form');
         form.addEventListener('submit', event => {
             event.preventDefault();
 
-            const content = document.getElementById('diary-content').value;
+            const content_old = document.getElementById('diary-content').value;
+            const content = `## ${dateStr} ${timeStr}:\n` + content_old;
+            //console.log(content)
 
             // 发送日记内容到后台
             fetch('/submit_diary', {

@@ -40,7 +40,7 @@ def submit_diary():
     # 将新的日记内容发送*到坚果云一个文件，是将日记内容更新到文件最前面
     with client.open(path=BIJIBEN, mode='r', encoding='utf-8') as file:
         jianguoyun_content = file.read()
-        print(jianguoyun_content)
+        # print(jianguoyun_content)
     #将文本数据写入io.StringIO对象
     text_data = content + jianguoyun_content 
     fileobj = io.BytesIO(text_data.encode('utf-8'))
@@ -59,7 +59,7 @@ def get_diaries():
         diaries = [{'content': line.strip()} for line in f]
 
     # 返回日记列表
-    print(diaries)
+    # print(diaries)
     # print(jsonify(diaries))
     return jsonify(diaries)
 
