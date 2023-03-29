@@ -3,7 +3,7 @@ import io
 from flask import Flask, request, jsonify, render_template
 import conf as CONF
 
-app = Flask(__name__, template_folder=CONF.TEMPLATE_DIR)
+app = Flask(__name__, template_folder=CONF.TEMPLATE_DIR,static_folder="data")
 
 client = Client(base_url='https://dav.jianguoyun.com/dav/',
                 auth=('2011633957@qq.com', 'av63imguhfr9agvx'))
@@ -19,6 +19,12 @@ def index():
     # return content
     
     return render_template('index.html')
+
+@app.route('/tp.html')
+def tp():
+    
+    return render_template('tp.html')
+
 
 @app.route('/submit_diary', methods=['POST'])
 def submit_diary():
