@@ -30,7 +30,7 @@ def tp():
 def submit_diary():
     # 获取 JSON 格式的表单数据
     data = request.json
-    print(data)
+    #print(data)
 
     # 获取日记内容
     content = data['content']
@@ -62,11 +62,12 @@ def get_diaries():
 
     # 从文件中读取所有日记
     with open(CONF.DIARY_TXT_DIR, 'r', encoding='utf-8') as f:
-        diaries = [{'content': line.strip()} for line in f]
+        diaries = [{'content': line} for line in f]
 
     # 返回日记列表
     # print(diaries)
     # print(jsonify(diaries))
+    # 转换为字符串，二进制形式
     return jsonify(diaries)
 
 if __name__ == '__main__':

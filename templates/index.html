@@ -2,7 +2,14 @@
 <html>
 <head>
     <title>My Diary </title> 
-    
+    <style>
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-width: 80ch;
+            font-size: 20px;
+        }
+    </style>
 </head>
 <body>
     <h3>My Diary</h3>
@@ -19,15 +26,17 @@
     <script>
         // 获取日记列表
         fetch('/get_diaries')
+            //将字符串，转换为json对象
             .then(response => response.json())
             .then(diaries => {
                 // 在页面上显示日记列表
                 const diaryList = document.getElementById('diary-list');
+                //console.log(diaries)
                 diaries.forEach(diary => {
                     const content = diary.content;
-                    const p = document.createElement('p');
-                    p.textContent = content;
-                    diaryList.appendChild(p);
+                    const pre = document.createElement('pre');
+                    pre.textContent = content;
+                    diaryList.appendChild(pre);
                 });
             });
         
@@ -42,6 +51,7 @@
             const content_old = document.getElementById('diary-content').value;
             const content = `## ${dateStr} ${timeStr}:\n` + content_old;
             //console.log(content)
+            //console.log(JSON.stringify({content}));
 
             // 发送日记内容到后台
             fetch('/submit_diary', {
@@ -53,15 +63,16 @@
             })
             .then(response => response.json())
             .then(diary => {
+                //console.log("*******")
+                //console.log(diary)
                 // 在页面上显示新保存的日记
                 const content = diary.content;
-                const p = document.createElement('p');
-                p.style.whiteSpace = "pre";
-                p.textContent = content;
+                const pre = document.createElement('pre');
+                pre.textContent = content;
                 const diaryList = document.getElementById('diary-list');
                 <!-- diaryList.appendChild(p); -->
                 // 将p元素放在diaryList第一个元素的前面，即p元素放在最前面
-                diaryList.insertBefore(p, diaryList.firstChild);
+                diaryList.insertBefore(pre, diaryList.firstChild);
                 
                 // 清空表单
                 const form = document.getElementById('diary-form');
