@@ -1,3 +1,4 @@
+import csv
 from webdav4.client import Client
 import io
 from flask import Flask, request, jsonify, render_template
@@ -36,12 +37,30 @@ def submit_diary():
     content = data['content']
     content = content+'\n********************************\n'
 
-    # 将新的内容添加到diary.txt 最前面       
-    with open(CONF.DIARY_TXT_DIR, 'r+', encoding='utf-8') as file:
-        old_content = file.read()
+    # # 将新的内容添加到diary.txt 最前面       
+    # with open(CONF.DIARY_TXT_DIR, 'r+', encoding='utf-8') as file:
+    #     old_content = file.read()
+    #     file.seek(0)
+    #     # print(content+'\n\n\n' + old_content)
+    #     file.write(content + old_content)
+    # 打开CSV文件并读取数据
+    
+    with open(CONF.DIARY_CSV_DIR, 'r+', newline='',encoding='utf-8') as file:
+        reader = csv.reader(file, delimiter=',')
+        data = list(reader)
+        # print(data)
+        # 在第一行插入新的数据
+        
+        new_row = [content]
+
+        if not data:
+            data.insert(0, new_row)
+        else:
+            data.insert(1, new_row)
+        print(data)
         file.seek(0)
-        # print(content+'\n\n\n' + old_content)
-        file.write(content + old_content)
+        writer = csv.writer(file, delimiter=',')
+        writer.writerows(data)    
 
     # 将新的日记内容发送*到坚果云一个文件，是将日记内容更新到文件最前面
     with client.open(path=BIJIBEN, mode='r', encoding='utf-8') as file:
@@ -61,8 +80,14 @@ def submit_diary():
 def get_diaries():
 
     # 从文件中读取所有日记
-    with open(CONF.DIARY_TXT_DIR, 'r', encoding='utf-8') as f:
-        diaries = [{'content': line} for line in f]
+    # with open(CONF.DIARY_TXT_DIR, 'r', encoding='utf-8') as f:
+    #     diaries = [{'content': line} for line in f]
+        
+    with open(CONF.DIARY_CSV_DIR, 'r+', newline='',encoding='utf-8') as file:
+        reader = csv.reader(file, delimiter=',')
+        diaries = list(reader)
+        diaries = [{'content': line[0]} for line in diaries[1:]]
+        print(diaries)
 
     # 返回日记列表
     # print(diaries)
