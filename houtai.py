@@ -1,4 +1,6 @@
+import os
 import csv
+import re
 from webdav4.client import Client
 import io
 from flask import Flask, request, jsonify, render_template
@@ -9,6 +11,26 @@ app = Flask(__name__, template_folder=CONF.TEMPLATE_DIR,static_folder="data")
 client = Client(base_url='https://dav.jianguoyun.com/dav/',
                 auth=('2011633957@qq.com', 'av63imguhfr9agvx'))
 BIJIBEN = '/2022-1-1-笔记本/2022-1-1-Logseq/pages/笔记本.md'
+
+
+def int_csv():
+    # 要创建的文件路径
+    file_path = CONF.DIARY_CSV_DIR
+
+    # 判断文件是否存在
+    if not os.path.exists(file_path):
+        # 如果文件不存在，创建该文件
+        with open(file_path, 'w', encoding='utf-8') as file:
+            file.write('diary-log,tags')
+
+        print(f'File {file_path} has been created.')
+    else:
+        with open(file_path, 'r+', encoding='utf-8') as file:
+            if not file.read():
+                file.write('diary-log,tags')
+        print(f'File {file_path} already exists.')
+
+int_csv()
 
 @app.route('/')
 def index():
@@ -34,8 +56,8 @@ def submit_diary():
     #print(data)
 
     # 获取日记内容
-    content = data['content']
-    content = content+'\n********************************\n'
+    origin_content = data['content']
+    content = origin_content+'\n'+'*'*80+'\n'
 
     # # 将新的内容添加到diary.txt 最前面       
     # with open(CONF.DIARY_TXT_DIR, 'r+', encoding='utf-8') as file:
@@ -48,16 +70,16 @@ def submit_diary():
     with open(CONF.DIARY_CSV_DIR, 'r+', newline='',encoding='utf-8') as file:
         reader = csv.reader(file, delimiter=',')
         data = list(reader)
-        # print(data)
-        # 在第一行插入新的数据
         
-        new_row = [content]
+        # 匹配标签，找到所有的标签
+        matches = re.findall(r"(?<!#)#\w+(?<!#)\s", content)
+        tags = [match.strip('# \n') for match in matches]
+        new_row = [content,",".join(tags)]
 
         if not data:
             data.insert(0, new_row)
         else:
             data.insert(1, new_row)
-        print(data)
         file.seek(0)
         writer = csv.writer(file, delimiter=',')
         writer.writerows(data)    
@@ -87,7 +109,6 @@ def get_diaries():
         reader = csv.reader(file, delimiter=',')
         diaries = list(reader)
         diaries = [{'content': line[0]} for line in diaries[1:]]
-        print(diaries)
 
     # 返回日记列表
     # print(diaries)
