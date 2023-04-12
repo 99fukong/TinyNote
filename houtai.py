@@ -30,7 +30,6 @@ def int_csv():
                 file.write('diary-log,tags')
         print(f'File {file_path} already exists.')
 
-int_csv()
 
 @app.route('/')
 def index():
@@ -117,5 +116,7 @@ def get_diaries():
     return jsonify(diaries)
 
 if __name__ == '__main__':
+    # 初始化csv文件
+    int_csv()
     # host 改为 0.0.0.0 或者本机的公网IP，否则外网方问有问题
     app.run(host="0.0.0.0", port=5050)
