@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Diary </title> 
+ 
     <style>
         pre {
             white-space: pre-wrap;
             word-wrap: break-word;
             max-width: 80ch;
             font-size: 20px;
+            
         }
 		#diary-content {
   			font-size: 23px;
             width: 100%;
             height: 300px;
 		}
-        
+        <!-- pre { border: 2px solid #1340be; /* 设置边框样式 */ padding: 10px; /* 设置内边距 */ margin-bottom: 10px; /* 设置外边距 */ }  -->
     </style>
 </head>
 <body>
-    <h3>My Diary</h3>
     <a href="tp.html">图片页面</a>
     <a href="https://lzw.fukonglzw.cn:6060/">图床</a>
 
@@ -43,6 +43,9 @@
                     const content = diary.content;
                     const pre = document.createElement('pre');
                     pre.textContent = content;
+                    pre.style.border = '2px solid #333'; // 设置边框样式
+                    pre.style.padding = '10px'; // 设置内边距
+                    pre.style.marginBottom = '10px'; // 设置外边距
                     diaryList.appendChild(pre);
                 });
             });
@@ -76,6 +79,9 @@
                 const content = diary.content;
                 const pre = document.createElement('pre');
                 pre.textContent = content;
+                pre.style.border = '2px solid #1340be'; // 设置边框样式
+                pre.style.padding = '10px'; // 设置内边距
+                pre.style.marginBottom = '10px'; // 设置外边距
                 const diaryList = document.getElementById('diary-list');
                 <!-- diaryList.appendChild(p); -->
                 // 将p元素放在diaryList第一个元素的前面，即p元素放在最前面
