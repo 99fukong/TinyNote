@@ -30,6 +30,22 @@ def int_csv():
                 file.write('diary-log,tags')
         print(f'File {file_path} already exists.')
 
+def int_csv_t():
+    # 要创建的文件路径
+    file_path = CONF.ZTB_CSV_DIR
+
+    # 判断文件是否存在
+    if not os.path.exists(file_path):
+        # 如果文件不存在，创建该文件
+        with open(file_path, 'w', encoding='utf-8') as file:
+            file.write('diary-log,tags')
+
+        print(f'File {file_path} has been created.')
+    else:
+        with open(file_path, 'r+', encoding='utf-8') as file:
+            if not file.read():
+                file.write('diary-log,tags')
+        print(f'File {file_path} already exists.')
 
 @app.route('/')
 def index():
@@ -46,6 +62,11 @@ def index():
 def tp():
     
     return render_template('tp.html')
+
+
+@app.route('/ztb.html')
+def ztb():
+    return render_template('ztb.html')
 
 
 @app.route('/submit_diary', methods=['POST'])
@@ -97,6 +118,39 @@ def submit_diary():
     diary = {'content': content}
     return jsonify(diary)
 
+@app.route('/submit_ztb', methods=['POST'])
+def submit_diary_z():
+    # 获取 JSON 格式的表单数据
+    data = request.json
+    #print(data)
+
+    # 获取日记内容
+    origin_content = data['content']
+    content = origin_content+'\n'+'*'*80+'\n'
+
+    # 打开CSV文件并读取数据
+    
+    with open(CONF.ZTB_CSV_DIR, 'r+', newline='',encoding='utf-8') as file:
+        reader = csv.reader(file, delimiter=',')
+        data = list(reader)
+        
+        # 匹配标签，找到所有的标签
+        matches = re.findall(r"(?<!#)#\w+(?<!#)\s", content)
+        tags = [match.strip('# \n') for match in matches]
+        new_row = [content,",".join(tags)]
+
+        if not data:
+            data.insert(0, new_row)
+        else:
+            data.insert(1, new_row)
+        file.seek(0)
+        writer = csv.writer(file, delimiter=',')
+        writer.writerows(data)    
+
+    # 返回保存的日记
+    diary = {'content': content}
+    return jsonify(diary)
+
 @app.route('/get_diaries', methods=['GET'])
 def get_diaries():
 
@@ -115,8 +169,20 @@ def get_diaries():
     # 转换为字符串，二进制形式
     return jsonify(diaries)
 
+@app.route('/get_ztb', methods=['GET'])
+def get_diaries_z():
+
+    with open(CONF.ZTB_CSV_DIR, 'r+', newline='',encoding='utf-8') as file:
+        reader = csv.reader(file, delimiter=',')
+        diaries = list(reader)
+        diaries = [{'content': line[0]} for line in diaries[1:]]
+
+    # 转换为字符串，二进制形式
+    return jsonify(diaries)
+
 if __name__ == '__main__':
     # 初始化csv文件
     int_csv()
+    int_csv_t()
     # host 改为 0.0.0.0 或者本机的公网IP，否则外网方问有问题
     app.run(host="0.0.0.0", port=5050)

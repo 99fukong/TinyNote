@@ -21,7 +21,7 @@
 <body>
     <a href="tp.html">图片页面</a>
     <a href="https://lzw.fukonglzw.cn:6060/">图床</a>
-    <a href="ztb.html">粘贴板</a>
+    <a href="/">首页</a>
 
     <form id="diary-form">
         <textarea id="diary-content" ></textarea>
@@ -33,7 +33,7 @@
 
     <script>
         // 获取日记列表
-        fetch('/get_diaries')
+        fetch('/get_ztb')
             //将字符串，转换为json对象
             .then(response => response.json())
             .then(diaries => {
@@ -65,7 +65,7 @@
             //console.log(JSON.stringify({content}));
 
             // 发送日记内容到后台
-            fetch('/submit_diary', {  // 请求地址
+            fetch('/submit_ztb', {  // 请求地址
                 method: 'POST',  // HTTP 方法
                 headers: {
                     'Content-Type': 'application/json'// 请求头 表示请求体中的数据类型是 JSON
