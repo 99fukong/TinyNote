@@ -58,6 +58,23 @@ def index():
     
     return render_template('index.html')
 
+
+@app.route('/delete_diary/<int:diary_id>', methods=['DELETE'])
+def delete_diary(diary_id):
+    # 从 CSV 文件中删除日记条目
+    with open(CONF.DIARY_CSV_DIR, 'r', newline='', encoding='utf-8') as file:
+        reader = csv.reader(file, delimiter=',')
+        data = []
+        for i, row in enumerate(reader):
+            if i != diary_id:
+                data.append(row)
+    with open(CONF.DIARY_CSV_DIR, 'w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file, delimiter=',')
+        writer.writerows(data)
+
+    # 返回成功消息
+    return jsonify({'status': 'success'})
+
 @app.route('/tp.html')
 def tp():
     
@@ -114,7 +131,7 @@ def submit_diary():
     # 将数据从io.StringIO对象上传到远程文件
     client.upload_fileobj(fileobj, BIJIBEN, overwrite=True)
 
-    # 返回保存的日记
+    # 返回保存的日记, @todo 返回行号：{'content': content， 'lineNumber'：index}
     diary = {'content': content}
     return jsonify(diary)
 
@@ -161,7 +178,8 @@ def get_diaries():
     with open(CONF.DIARY_CSV_DIR, 'r+', newline='',encoding='utf-8') as file:
         reader = csv.reader(file, delimiter=',')
         diaries = list(reader)
-        diaries = [{'content': line[0]} for line in diaries[1:]]
+        diaries = [{'content': line[0], 'lineNumber': index+1}
+                   for index, line in enumerate(diaries[1:])]
 
     # 返回日记列表
     # print(diaries)
