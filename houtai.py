@@ -48,7 +48,7 @@ def int_csv_t():
         print(f'File {file_path} already exists.')
 
 @app.route('/')
-def index():
+def index_html():
     
     # # 打开文件
     # with open('/root/git_rep/web/templates/index.html', 'r', encoding='utf-8') as file:
@@ -58,6 +58,13 @@ def index():
     
     return render_template('index.html')
 
+@app.route('/index.js')
+def index_js():    
+    return render_template('index.js')
+
+@app.route('/index.css')
+def index_css():    
+    return render_template('index.css')
 
 @app.route('/delete_diary/<int:diary_id>', methods=['DELETE'])
 def delete_diary(diary_id):
