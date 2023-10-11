@@ -1,0 +1,11 @@
+services:
+  app:
+    image: fukong99/python3.8-lzw-v0.7
+    # command: sh -c "tail -f /dev/null"
+    # command : sh -c "python flask_web.py"
+    command : sh -c "python /app/houtai.py"
+    working_dir: /app
+    ports:
+      - 5050:5050    
+    volumes:
+      - ./:/app
