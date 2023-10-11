@@ -9,3 +9,4 @@ services:
       - 5050:5050    
     volumes:
       - ./:/app
+    restart: always
