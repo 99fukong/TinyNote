@@ -11,9 +11,9 @@ fetch('/get_diaries')
             //console.log(index)
             const pre = document.createElement('pre');
             pre.textContent = content;
-            pre.style.border = '2px solid #333'; // 设置边框样式
-            pre.style.padding = '10px'; // 设置内边距
-            pre.style.marginBottom = '10px'; // 设置外边距
+            // pre.style.border = '2px solid #333'; // 设置边框样式
+            // pre.style.padding = '10px'; // 设置内边距
+            // pre.style.marginBottom = '10px'; // 设置外边距
 
             // 创建删除按钮
             const delButton = document.createElement('button');
@@ -72,9 +72,9 @@ form.addEventListener('submit', event => { //使用 .addEventListener() 方法�
         const content = diary.content;
         const pre = document.createElement('pre');
         pre.textContent = content;
-        pre.style.border = '2px solid #1340be'; // 设置边框样式
-        pre.style.padding = '10px'; // 设置内边距
-        pre.style.marginBottom = '10px'; // 设置外边距
+        // pre.style.border = '2px solid #1340be'; // 设置边框样式
+        // pre.style.padding = '10px'; // 设置内边距
+        // pre.style.marginBottom = '10px'; // 设置外边距
         //@todo
         // 创建删除按钮
         // // 创建行号
