@@ -1,38 +1,57 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Code+Pro">
-    <!-- <link rel="stylesheet" type="text/css" href="index.css" charset="urf-8"> -->
-    <style>
-        pre {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            max-width: 80ch;
-            font-size: 20px;
-            font-family: "Source Code Pro","Courier New","等线", Courier, monospace;
-            
-        }
-		#diary-content {
-  			font-size: 23px;
-            width: 100%;
-            height: 300px;
-            font-family: "Source Code Pro","Courier New","等线", Courier, monospace;
-		}
-    </style>
-</head>
-<body>
-    <a href="tp.html">图片页面</a>
-    <a href="https://lzw.fukonglzw.cn:6060/">图床</a>
-    <a href="ztb.html">粘贴板</a>
+    <head>
+        <title>TinyNote</title>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Code+Pro">
+        <!-- <link rel="stylesheet" type="text/css" href="index.css" charset="urf-8"> -->
+        <style>
+            body {
+                font-family: "Source Code Pro","Courier New","等线", Courier, monospace;
+                padding: 10px;
+                background-color: #333;
+                color: #c9cdd1;
+            }  
+            .container {
+                max-width: 100ch;
+                margin-left: auto;
+                margin-right: auto;
+            }                    
+            pre {
+                white-space: pre-wrap;
+                word-wrap: break-word;
+                width: 100%;
+                font-size: 20px;
+                border: 2px solid hsl(240, 2%, 9%); /* 设置边框样式 */ 
+                margin: 0 auto 10px; /* 设置外边距 */
+                font-family: "Source Code Pro","Courier New","等线", Courier, monospace;
+                /* text-rendering: geometricPrecision; */
+                line-height: 1.35;
+                tab-size: 2;
+                display: block; /* 设置为块级元素 */
+            }            
+            #diary-content {
+                font-size: 23px;
+                width: 100%;
+                height: 300px;
+                font-family: "Source Code Pro","Courier New","等线", Courier, monospace;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">     
+            <a href="tp.html" style="font-size: 20px; color: #c9cdd1;" >图片页面</a>
+            <a href="https://lzw.fukonglzw.cn:6060/" style="font-size: 20px; color: #c9cdd1;" >图床</a>
+            <a href="ztb.html" style="font-size: 20px; color: #c9cdd1;" >粘贴板</a>
 
-    <form id="diary-form">
-        <textarea id="diary-content" ></textarea>
-        <br>
-        <button type="submit">Save</button>
-    </form>
+            <form id="diary-form">
+                <textarea id="diary-content" ></textarea>
+                <br>
+                <button type="submit">Save</button>
+            </form>
 
-    <div id="diary-list"></div>
-    <script src="index.js"></script>
-    
-</body>
+            <div id="diary-list"></div>
+            <script src="index.js"></script>
+        </div>    
+    </body>
 </html>

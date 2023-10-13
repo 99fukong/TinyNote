@@ -1,17 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>TinyNote</title>
+    <meta charset="UTF-8">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Code+Pro">
  
     <style>
 
-        pre {
+        /* pre {
             white-space: pre-wrap;
             word-wrap: break-word;
             max-width: 80ch;
             font-size: 20px;
             font-family: "Source Code Pro","Courier New","等线", Courier, monospace;
-        }
+        } */
+        pre {
+                white-space: pre-wrap;
+                word-wrap: break-word;
+                width: 100%;
+                font-size: 20px;
+                border: 2px solid hsl(240, 2%, 9%); /* 设置边框样式 */ 
+                margin: 0 auto 10px; /* 设置外边距 */
+                font-family: "Source Code Pro","Courier New","等线", Courier, monospace;
+                /* text-rendering: geometricPrecision; */
+                line-height: 1.35;
+                tab-size: 2;
+                display: block; /* 设置为块级元素 */
+            } 
 		#diary-content {
   			font-size: 23px;
             width: 100%;
