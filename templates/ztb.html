@@ -6,48 +6,72 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Code+Pro">
  
     <style>
+    
+        .button {
+            display: inline-block;
+            padding: 4px 4px;
+            background-color: #ffffff;
+            color: #333;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 15px;
+            border: none;
+        }
 
-        /* pre {
+        body {
+            font-family: "Source Code Pro","Courier New","等线", Courier, monospace;
+            padding: 10px;
+            background-color: #333;
+            color: #c9cdd1;
+        }  
+
+        .xzt {
+            max-width: 100ch;
+            margin-left: auto;
+            margin-right: auto;
+            
+        }     
+        
+        pre {
             white-space: pre-wrap;
             word-wrap: break-word;
-            max-width: 80ch;
+            width: 100%;
             font-size: 20px;
+            border: 2px solid hsl(240, 2%, 9%); /* 设置边框样式 */ 
+            margin: 0 auto 10px; /* 设置外边距 */
             font-family: "Source Code Pro","Courier New","等线", Courier, monospace;
-        } */
-        pre {
-                white-space: pre-wrap;
-                word-wrap: break-word;
-                width: 100%;
-                font-size: 20px;
-                border: 2px solid hsl(240, 2%, 9%); /* 设置边框样式 */ 
-                margin: 0 auto 10px; /* 设置外边距 */
-                font-family: "Source Code Pro","Courier New","等线", Courier, monospace;
-                /* text-rendering: geometricPrecision; */
-                line-height: 1.35;
-                tab-size: 2;
-                display: block; /* 设置为块级元素 */
-            } 
+            /* text-rendering: geometricPrecision; */
+            line-height: 1.35;
+            tab-size: 2;
+            display: block; /* 设置为块级元素 */
+        }            
+
 		#diary-content {
   			font-size: 23px;
             width: 100%;
             height: 300px;
             font-family: "Source Code Pro","Courier New","等线", Courier, monospace;
 		}
-        <!-- pre { border: 2px solid #1340be; /* 设置边框样式 */ padding: 10px; /* 设置内边距 */ margin-bottom: 10px; /* 设置外边距 */ }  -->
+        
     </style>
 </head>
 <body>
-    <a href="tp.html">图片页面</a>
-    <a href="https://lzw.fukonglzw.cn:6060/">图床</a>
-    <a href="/">首页</a>
+    
+    <div class="xzt">
 
-    <form id="diary-form">
-        <textarea id="diary-content" ></textarea>
-        <br>
-        <button type="submit">Save</button>
-    </form>
+        <a href="tp.html" class="button">图片页面</a>
+        <a href="https://lzw.fukonglzw.cn:6060/" class="button">图床</a>
+        <a href="/" class="button">首页</a>
 
-    <div id="diary-list"></div>
+        <form id="diary-form">
+            <textarea id="diary-content" ></textarea>
+            <br>
+            <button type="submit">Save</button>
+        </form>
+
+        <div id="diary-list"></div>
+
+    </div>
 
     <script>
         // 获取日记列表
@@ -62,9 +86,11 @@
                     const content = diary.content;
                     const pre = document.createElement('pre');
                     pre.textContent = content;
+                    /*
                     pre.style.border = '2px solid #333'; // 设置边框样式
                     pre.style.padding = '10px'; // 设置内边距
                     pre.style.marginBottom = '10px'; // 设置外边距
+                    */
                     diaryList.appendChild(pre);
                 });
             });
@@ -98,9 +124,10 @@
                 const content = diary.content;
                 const pre = document.createElement('pre');
                 pre.textContent = content;
-                pre.style.border = '2px solid #1340be'; // 设置边框样式
+               /* pre.style.border = '2px solid #1340be'; // 设置边框样式
                 pre.style.padding = '10px'; // 设置内边距
                 pre.style.marginBottom = '10px'; // 设置外边距
+                */
                 const diaryList = document.getElementById('diary-list');
                 <!-- diaryList.appendChild(p); -->
                 // 将p元素放在diaryList第一个元素的前面，即p元素放在最前面
