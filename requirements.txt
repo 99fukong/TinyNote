@@ -2,3 +2,4 @@ openai
 flask
 webdav4
 debugpy
+python-dotenv

@@ -1,6 +1,6 @@
 __pycache__/
 diary.txt
 diary.txt*
-diary.csv
-diary.csv*
-ztb.csv*
+.env_*
+.env
+*csv

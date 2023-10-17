@@ -5,12 +5,22 @@ from webdav4.client import Client
 import io
 from flask import Flask, request, jsonify, render_template
 import conf as CONF
+from dotenv import load_dotenv
 
 app = Flask(__name__, template_folder=CONF.TEMPLATE_DIR,static_folder="data")
 
-client = Client(base_url='https://dav.jianguoyun.com/dav/',
-                auth=('2011633957@qq.com', 'av63imguhfr9agvx'))
-BIJIBEN = '/2022-1-1-笔记本/2022-1-1-Logseq/pages/笔记本.md'
+# 加载 .env 文件中的环境变量
+load_dotenv()
+
+# 通过 os.environ 访问环境变量
+BASE_URL = os.environ.get('BASE_URL')
+AUTH_USER = os.environ.get('AUTH_USER')
+AUTH_PASSWORD = os.environ.get('AUTH_PASSWORD')
+BIJIBEN = os.environ.get('BIJIBEN')
+
+client = Client(base_url=BASE_URL,
+                auth=(AUTH_USER, AUTH_PASSWORD))
+# BIJIBEN = '/2022-1-1-笔记本/2022-1-1-Logseq/pages/笔记本.md'
 
 
 def int_csv():
