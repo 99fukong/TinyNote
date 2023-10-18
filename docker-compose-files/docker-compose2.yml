@@ -4,7 +4,7 @@ services:
     container_name: lrx_web
     working_dir: /app
     ports:
-      - 5066:5050
+      - 5002:5050
     volumes:
       # - ../:/app
       - ../data:/app/data
