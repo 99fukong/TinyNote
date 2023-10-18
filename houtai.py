@@ -18,6 +18,16 @@ AUTH_USER = os.environ.get('AUTH_USER')
 AUTH_PASSWORD = os.environ.get('AUTH_PASSWORD')
 BIJIBEN = os.environ.get('BIJIBEN')
 
+if not BASE_URL:
+    raise TypeError("变量 BASE_URL 不能为 空或None ")
+if not AUTH_USER:
+    raise TypeError("变量 AUTH_USER  不能为 空或None")
+if not AUTH_PASSWORD:
+    raise TypeError("变量 AUTH_PASSWORD  不能为 空或None")
+if not BIJIBEN:
+    raise TypeError("变量 BIJIBEN  不能为 空或None")
+
+
 client = Client(base_url=BASE_URL,
                 auth=(AUTH_USER, AUTH_PASSWORD))
 # BIJIBEN = '/2022-1-1-笔记本/2022-1-1-Logseq/pages/笔记本.md'
