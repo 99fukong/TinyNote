@@ -4,15 +4,15 @@ FROM python:3.8.18-slim-bullseye
 # 将工作目录设置为 /app
 WORKDIR /app
 
-RUN sed -i 's/deb.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list \
-    && apt-get update --fix-missing && apt-get install -y --fix-missing \
-    build-essential \
-    vim \
-    git
-
-# RUN apt-get update --fix-missing && apt-get install -y --fix-missing \
+# RUN sed -i 's/deb.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list \
+#     && apt-get update --fix-missing && apt-get install -y --fix-missing \
 #     build-essential \
-#     vim
+#     vim \
+#     git
+
+RUN apt-get update --fix-missing && apt-get install -y --fix-missing \
+    build-essential \
+    vim
 
 COPY ./requirements.txt /app
 

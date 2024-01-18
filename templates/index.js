@@ -65,26 +65,10 @@ form.addEventListener('submit', event => { //使用 .addEventListener() 方法�
         body: JSON.stringify({content}) // 请求体 将一个对象 {content: content} 转换为 JSON 格式的字符串。
     })
     .then(response => response.json())
-    .then(diary => {
-        //console.log("*******")
-        //console.log(diary)
-        // 在页面上显示新保存的日记
-        const content = diary.content;
-        const pre = document.createElement('pre');
-        pre.textContent = content;
-        // pre.style.border = '2px solid #1340be'; // 设置边框样式
-        // pre.style.padding = '10px'; // 设置内边距
-        // pre.style.marginBottom = '10px'; // 设置外边距
-        //@todo
-        // 创建删除按钮
-        // // 创建行号
-        const diaryList = document.getElementById('diary-list');
-        // <!-- diaryList.appendChild(p); -->
-        // 将p元素放在diaryList第一个元素的前面，即p元素放在最前面
-        diaryList.insertBefore(pre, diaryList.firstChild);
-        
-        // 清空表单
-        const form = document.getElementById('diary-form');
-        form.reset();
+    .then(result => {
+        if (result.refresh) {
+            // 刷新页面
+            location.reload();
+        }
     });
 });

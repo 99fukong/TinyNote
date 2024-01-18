@@ -117,28 +117,20 @@ def ztb():
 def submit_diary():
     # 获取 JSON 格式的表单数据
     data = request.json
-    #print(data)
 
     # 获取日记内容
     origin_content = data['content']
     content = origin_content+'\n'+'*'*80+'\n'
 
-    # # 将新的内容添加到diary.txt 最前面       
-    # with open(CONF.DIARY_TXT_DIR, 'r+', encoding='utf-8') as file:
-    #     old_content = file.read()
-    #     file.seek(0)
-    #     # print(content+'\n\n\n' + old_content)
-    #     file.write(content + old_content)
     # 打开CSV文件并读取数据
-    
-    with open(CONF.DIARY_CSV_DIR, 'r+', newline='',encoding='utf-8') as file:
+    with open(CONF.DIARY_CSV_DIR, 'r+', newline='', encoding='utf-8') as file:
         reader = csv.reader(file, delimiter=',')
         data = list(reader)
-        
+
         # 匹配标签，找到所有的标签
         matches = re.findall(r"(?<!#)#\w+(?<!#)\s", content)
         tags = [match.strip('# \n') for match in matches]
-        new_row = [content,",".join(tags)]
+        new_row = [content, ",".join(tags)]
 
         if not data:
             data.insert(0, new_row)
@@ -146,21 +138,20 @@ def submit_diary():
             data.insert(1, new_row)
         file.seek(0)
         writer = csv.writer(file, delimiter=',')
-        writer.writerows(data)    
+        writer.writerows(data)
 
-    # 将新的日记内容发送*到坚果云一个文件，是将日记内容更新到文件最前面
+    # 将新的日记内容发送到坚果云一个文件，是将日记内容更新到文件最前面
     with client.open(path=BIJIBEN, mode='r', encoding='utf-8') as file:
         jianguoyun_content = file.read()
-        # print(jianguoyun_content)
-    #将文本数据写入io.StringIO对象
-    text_data = content + jianguoyun_content 
+
+    # 将文本数据写入 io.StringIO 对象
+    text_data = content + jianguoyun_content
     fileobj = io.BytesIO(text_data.encode('utf-8'))
-    # 将数据从io.StringIO对象上传到远程文件
+    # 将数据从 io.StringIO 对象上传到远程文件
     client.upload_fileobj(fileobj, BIJIBEN, overwrite=True)
 
-    # 返回保存的日记, @todo 返回行号：{'content': content， 'lineNumber'：index}
-    diary = {'content': content}
-    return jsonify(diary)
+    # 刷新页面
+    return jsonify({'status': 'success', 'refresh': True})
 
 @app.route('/submit_ztb', methods=['POST'])
 def submit_diary_z():
