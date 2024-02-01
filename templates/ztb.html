@@ -75,9 +75,21 @@
 
     <script>
         // 获取日记列表
-        fetch('/get_ztb')
+        token = localStorage.getItem('jwtToken');
+
+        fetch('/get_ztb',{
+            headers: {
+                'Authorization': token,
+            }})                
             //将字符串，转换为json对象
-            .then(response => response.json())
+            .then(response => {
+                if (response.status === 401) {
+                    console.error(response)
+                    // Redirect to the login page or handle unauthorized access as needed
+                    window.location.href = '/login.html'; // Replace '/login' with the actual login page URL
+                }
+                return response.json();
+            })
             .then(diaries => {
                 // 在页面上显示日记列表
                 const diaryList = document.getElementById('diary-list'); //获取 ID 为 diary-list 的元素节点对象，并将它赋值给变量 diaryList

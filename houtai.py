@@ -6,8 +6,30 @@ import io
 from flask import Flask, request, jsonify, render_template
 import conf as CONF
 from dotenv import load_dotenv
+import jwt
+import datetime
+from flask_cors import CORS
 
 app = Flask(__name__, template_folder=CONF.TEMPLATE_DIR,static_folder="data")
+
+# 设置密钥，用于签名和验证 JWT
+secret_key = "your_secret_key"
+
+
+
+def generate_token(user_id):
+    expiration_time = datetime.datetime.utcnow() + datetime.timedelta(hours=24)
+    token = jwt.encode({"user_id": user_id, "exp": expiration_time}, secret_key, algorithm="HS256")
+    return token
+
+def verify_token(token):
+    try:
+        decoded_data = jwt.decode(token, secret_key, algorithms=["HS256"])
+        return decoded_data
+    except jwt.ExpiredSignatureError:
+        return None
+    except jwt.InvalidTokenError:
+        return None
 
 # 加载 .env 文件中的环境变量
 load_dotenv()
@@ -77,6 +99,47 @@ def index_html():
     # return content
     
     return render_template('index.html')
+
+
+@app.route('/login.html')
+def login_htnl():    
+    return render_template('login.html')
+
+@app.route('/login', methods=['POST'])
+def login():
+    # 从CSV文件中读取用户名和密码信息
+    with open('users.csv', 'r') as csvfile:
+        reader = csv.DictReader(csvfile)
+        data = [row for row in reader]
+
+    # 获取请求中的用户名和密码
+    request_data = request.get_json()
+    username = request_data.get('username')
+    password = request_data.get('password')
+
+    # 在读取的数据中查找匹配的用户名和密码
+    for row in data:
+        if row['username'] == username and row['password'] == password:
+            user_id = row['user_id']  # 假设CSV文件中有一个'user_id'列
+            token = generate_token(user_id)
+            return jsonify({"token": token})
+
+    return jsonify({"error": "Invalid credentials"}), 401
+
+# @app.route('/protected', methods=['GET'])
+# def protected():
+#     token = request.headers.get('Authorization')
+
+#     if not token:
+#         return jsonify({"error": "Token is missing"}), 401
+
+#     decoded_data = verify_token(token)
+
+#     if decoded_data:
+#         return jsonify({"message": "Access granted!", "user_id": decoded_data['user_id']})
+#     else:
+#         return jsonify({"error": "Token is invalid or expired"}), 401
+
 
 @app.route('/index.js')
 def index_js():    
@@ -188,13 +251,23 @@ def submit_diary_z():
 
 @app.route('/get_diaries', methods=['GET'])
 def get_diaries():
+    
+    token = request.headers.get('Authorization')
 
+    if not token:
+        return jsonify({"error": "Token is missing"}), 401
+
+    decoded_data = verify_token(token)
+
+    if not decoded_data:
+        return jsonify({"error": "Token is invalid or expired"}), 401
+    
     # 从文件中读取所有日记
     # with open(CONF.DIARY_TXT_DIR, 'r', encoding='utf-8') as f:
     #     diaries = [{'content': line} for line in f]
         
     with open(CONF.DIARY_CSV_DIR, 'r+', newline='',encoding='utf-8') as file:
-        reader = csv.reader(file, delimiter=',')
+        reader = csv.reader(file, delimiter=',')  
         diaries = list(reader)
         diaries = [{'content': line[0], 'lineNumber': index+1}
                    for index, line in enumerate(diaries[1:])]
@@ -207,7 +280,17 @@ def get_diaries():
 
 @app.route('/get_ztb', methods=['GET'])
 def get_diaries_z():
+    
+    token = request.headers.get('Authorization')
 
+    if not token:
+        return jsonify({"error": "Token is missing"}), 401
+
+    decoded_data = verify_token(token)
+
+    if not decoded_data:
+        return jsonify({"error": "Token is invalid or expired"}), 401
+    
     with open(CONF.ZTB_CSV_DIR, 'r+', newline='',encoding='utf-8') as file:
         reader = csv.reader(file, delimiter=',')
         diaries = list(reader)
