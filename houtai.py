@@ -39,6 +39,8 @@ BASE_URL = os.environ.get('BASE_URL')
 AUTH_USER = os.environ.get('AUTH_USER')
 AUTH_PASSWORD = os.environ.get('AUTH_PASSWORD')
 BIJIBEN = os.environ.get('BIJIBEN')
+USERNAME = os.environ.get('USERNAME')
+PASSWORD = os.environ.get('PASSWORD')
 
 if not BASE_URL:
     raise TypeError("变量 BASE_URL 不能为 空或None ")
@@ -107,22 +109,17 @@ def login_htnl():
 
 @app.route('/login', methods=['POST'])
 def login():
-    # 从CSV文件中读取用户名和密码信息
-    with open('users.csv', 'r') as csvfile:
-        reader = csv.DictReader(csvfile)
-        data = [row for row in reader]
 
     # 获取请求中的用户名和密码
     request_data = request.get_json()
     username = request_data.get('username')
     password = request_data.get('password')
 
-    # 在读取的数据中查找匹配的用户名和密码
-    for row in data:
-        if row['username'] == username and row['password'] == password:
-            user_id = row['user_id']  # 假设CSV文件中有一个'user_id'列
-            token = generate_token(user_id)
-            return jsonify({"token": token})
+    # 固定密码， 以后有需求再改
+    if  USERNAME == username and  PASSWORD == password:
+        user_id = 1 # 假设'user_id' == 1
+        token = generate_token(user_id)
+        return jsonify({"token": token})
 
     return jsonify({"error": "Invalid credentials"}), 401
 
