@@ -8,7 +8,7 @@ import conf as CONF
 from dotenv import load_dotenv
 import jwt
 import datetime
-from flask_cors import CORS
+# from flask_cors import CORS
 
 app = Flask(__name__, template_folder=CONF.TEMPLATE_DIR,static_folder="data")
 
