@@ -6,10 +6,8 @@ import io
 from flask import Flask, request, jsonify, render_template
 import conf as CONF
 from dotenv import load_dotenv
-import jwt
-import datetime
-# from flask_cors import CORS
-
+from token_verify import token_required
+from token_verify import generate_token
 app = Flask(__name__, template_folder=CONF.TEMPLATE_DIR,static_folder="data")
 
 # 设置密钥，用于签名和验证 JWT
@@ -17,19 +15,19 @@ secret_key = "your_secret_key"
 
 
 
-def generate_token(user_id):
-    expiration_time = datetime.datetime.utcnow() + datetime.timedelta(hours=24)
-    token = jwt.encode({"user_id": user_id, "exp": expiration_time}, secret_key, algorithm="HS256")
-    return token
+# def generate_token(user_id):
+#     expiration_time = datetime.datetime.utcnow() + datetime.timedelta(hours=24)
+#     token = jwt.encode({"user_id": user_id, "exp": expiration_time}, secret_key, algorithm="HS256")
+#     return token
 
-def verify_token(token):
-    try:
-        decoded_data = jwt.decode(token, secret_key, algorithms=["HS256"])
-        return decoded_data
-    except jwt.ExpiredSignatureError:
-        return None
-    except jwt.InvalidTokenError:
-        return None
+# def verify_token(token):
+#     try:
+#         decoded_data = jwt.decode(token, secret_key, algorithms=["HS256"])
+#         return decoded_data
+#     except jwt.ExpiredSignatureError:
+#         return None
+#     except jwt.InvalidTokenError:
+#         return None
 
 # 加载 .env 文件中的环境变量
 load_dotenv()
@@ -123,19 +121,6 @@ def login():
 
     return jsonify({"error": "Invalid credentials"}), 401
 
-# @app.route('/protected', methods=['GET'])
-# def protected():
-#     token = request.headers.get('Authorization')
-
-#     if not token:
-#         return jsonify({"error": "Token is missing"}), 401
-
-#     decoded_data = verify_token(token)
-
-#     if decoded_data:
-#         return jsonify({"message": "Access granted!", "user_id": decoded_data['user_id']})
-#     else:
-#         return jsonify({"error": "Token is invalid or expired"}), 401
 
 
 @app.route('/index.js')
@@ -147,6 +132,7 @@ def index_css():
     return render_template('index.css')
 
 @app.route('/delete_diary/<int:diary_id>', methods=['DELETE'])
+@token_required
 def delete_diary(diary_id):
     # 从 CSV 文件中删除日记条目
     with open(CONF.DIARY_CSV_DIR, 'r', newline='', encoding='utf-8') as file:
@@ -246,18 +232,20 @@ def submit_diary_z():
     diary = {'content': content}
     return jsonify(diary)
 
+
 @app.route('/get_diaries', methods=['GET'])
+@token_required
 def get_diaries():
     
-    token = request.headers.get('Authorization')
+    # token = request.headers.get('Authorization')
 
-    if not token:
-        return jsonify({"error": "Token is missing"}), 401
+    # if not token:xxx
+    #     return jsonify({"error": "Token is missing"}), 401
 
-    decoded_data = verify_token(token)
+    # decoded_data = verify_token(token)
 
-    if not decoded_data:
-        return jsonify({"error": "Token is invalid or expired"}), 401
+    # if not decoded_data:
+    #     return jsonify({"error": "Token is invalid or expired"}), 401
     
     # 从文件中读取所有日记
     # with open(CONF.DIARY_TXT_DIR, 'r', encoding='utf-8') as f:
@@ -270,23 +258,21 @@ def get_diaries():
                    for index, line in enumerate(diaries[1:])]
 
     # 返回日记列表
-    # print(diaries)
-    # print(jsonify(diaries))
-    # 转换为字符串，二进制形式
     return jsonify(diaries)
 
 @app.route('/get_ztb', methods=['GET'])
+@token_required
 def get_diaries_z():
     
-    token = request.headers.get('Authorization')
+    # token = request.headers.get('Authorization')
 
-    if not token:
-        return jsonify({"error": "Token is missing"}), 401
+    # if not token:
+    #     return jsonify({"error": "Token is missing"}), 401
 
-    decoded_data = verify_token(token)
+    # decoded_data = verify_token(token)
 
-    if not decoded_data:
-        return jsonify({"error": "Token is invalid or expired"}), 401
+    # if not decoded_data:
+    #     return jsonify({"error": "Token is invalid or expired"}), 401
     
     with open(CONF.ZTB_CSV_DIR, 'r+', newline='',encoding='utf-8') as file:
         reader = csv.reader(file, delimiter=',')

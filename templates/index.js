@@ -33,7 +33,10 @@ fetch('/get_diaries',{
             delButton.style.marginLeft = '10px';
             delButton.onclick = () => {
                 // 发送删除请求到后台
-                fetch(`/delete_diary/${index}`, { method: 'DELETE' })
+                fetch(`/delete_diary/${index}`, { 
+                    method: 'DELETE' , 
+                    headers: {
+                        'Authorization': token}})
                     .then(() => {
                         // 从页面上删除该日记
                         diaryList.removeChild(pre);
