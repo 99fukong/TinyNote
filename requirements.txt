@@ -4,3 +4,4 @@ webdav4
 debugpy
 python-dotenv
 PyJWT
+pymysql

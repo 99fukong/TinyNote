@@ -27,14 +27,25 @@ fetch('/get_diaries',{
             // pre.style.padding = '10px'; // 设置内边距
             // pre.style.marginBottom = '10px'; // 设置外边距
 
+            // 创建编辑按钮
+            const editButton = document.createElement('button');
+            editButton.textContent = '编辑';
+            editButton.style.marginLeft = '10px';
+            editButton.onclick = () => {
+                // 跳转到编辑页面，传递日记的ID或其他标识符
+                window.location.href = `/edit/${index}`;
+            };
+            pre.appendChild(editButton);
+
+
             // 创建删除按钮
             const delButton = document.createElement('button');
             delButton.textContent = '删除';
             delButton.style.marginLeft = '10px';
             delButton.onclick = () => {
                 // 发送删除请求到后台
-                fetch(`/delete_diary/${index}`, { 
-                    method: 'DELETE' , 
+                fetch(`/delete/{{ diary.id }}`, { 
+                    method: 'POST' , 
                     headers: {
                         'Authorization': token}})
                     .then(() => {

@@ -8,8 +8,7 @@ services:
     # image: my_wob_app:lzw_web
     # container_name: flask_app
     ports:
-      - 5050:5050   
-      - 8889:8889
+      - "5050:5050"
     volumes:
       - ./:/app
     depends_on:
@@ -20,9 +19,9 @@ services:
     #   MYSQL_PASSWORD: 123456
     #   MYSQL_DB: diary_db
     restart: always
-    #command : sh -c "python /app/houtai.py"
-    command: >
-      sh -c "python -m debugpy --listen 0.0.0.0:8889 --wait-for-client  /app/houtai.py"
+    command : sh -c "python /app/houtai.py"
+    # command: >
+    #   sh -c "python -m debugpy --listen 0.0.0.0:5678 --wait-for-client  /app/houtai.py"
     networks:
       - net
 

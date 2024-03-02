@@ -1,0 +1,53 @@
+/* edit.css */
+
+body {
+    background-color: #333;
+    color: #fff;
+    font-family: "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+}
+
+h1 {
+    color: #fff;
+}
+
+form {
+    max-width: 850px; /* 最大宽度为850px */
+    margin: 0 auto; /* 居中显示 */
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    color: #fff;
+}
+
+input[type="text"],
+textarea {
+    width: 850px; /* 设置文本框宽度为850px */
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    background-color: #333;
+    border: 2px solid #062906;
+    color: #fff;
+    font-size: 16px;
+}
+
+textarea {
+    height: 400px;
+    font-size: 20px;
+}
+
+input[type="submit"] {
+    background-color: #555;
+    color: #fff;
+    padding: 10px 15px;
+    border: 2px solid #062906;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+input[type="submit"]:hover {
+    background-color: #777;
+}
