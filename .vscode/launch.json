@@ -6,11 +6,11 @@
     "configurations": [
         {
             "name": "Python: 远程附加",
-            "type": "python",
+            "type": "debugpy",
             "request": "attach",
             "connect": {
                 "host": "localhost",
-                "port": 5678
+                "port": 8889
             },
             "pathMappings": [
                 {
