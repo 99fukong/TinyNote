@@ -1,4 +1,3 @@
-#token_verify.py
 import jwt
 from functools import wraps
 from flask import request, jsonify

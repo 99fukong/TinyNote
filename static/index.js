@@ -1,5 +1,5 @@
-    // 获取日记列表
-    token = localStorage.getItem('jwtToken');
+// 获取日记列表
+token = localStorage.getItem('jwtToken');
 
 fetch('/get_diaries',{
         headers: {
@@ -23,37 +23,33 @@ fetch('/get_diaries',{
             //console.log(index)
             const pre = document.createElement('pre');
             pre.textContent = content;
-// pre.style.border = '2px solid #333'; // 设置边框样式
-            // pre.style.padding = '10px'; // 设置内边距
-            // pre.style.marginBottom = '10px'; // 设置外边距
 
 
-             // 创建编辑按钮
-             const editButton = document.createElement('button');
-             editButton.textContent = '编辑';
-             editButton.style.marginLeft = '10px';
-             editButton.onclick = () => {
-                 // 跳转到编辑页面，传递日记的ID或其他标识符
-                 window.location.href = `/edit/${diary.id}`;
-             };
-             pre.appendChild(editButton);
- 
+        // 创建编辑按钮
+        const editButton = document.createElement('button');
+        editButton.textContent = '编辑';
+        editButton.style.marginLeft = '10px';
+        editButton.onclick = () => {
+            // 跳转到编辑页面，传递日记的ID或其他标识符
+            window.location.href = `/edit/${diary.id}`;
+        };
+        pre.appendChild(editButton);
 
 
-             
-            // 创建删除按钮
-            const delButton = document.createElement('button');
-            delButton.textContent = '删除';
-            delButton.style.marginLeft = '10px';
-            delButton.onclick = () => {
-                // 发送删除请求到后台
-                fetch(`/delete/${diary.id}`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                })
-                .then(() => {
+            
+        // 创建删除按钮
+        const delButton = document.createElement('button');
+        delButton.textContent = '删除';
+        delButton.style.marginLeft = '10px';
+        delButton.onclick = () => {
+            // 发送删除请求到后台
+            fetch(`/delete/${diary.id}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(() => {
                     // 从页面上删除该日记
                     diaryList.removeChild(pre);
                     alert('删除成功！');
@@ -63,12 +59,7 @@ fetch('/get_diaries',{
             };
             pre.appendChild(delButton);
 
-            // 创建行号
-            // const lineNumber = document.createElement('span');
-            // lineNumber.textContent = `(${index}) `;
-            // lineNumber.style.color = '#999';
-            // lineNumber.style.fontSize = '0.8em';
-            // pre.insertBefore(lineNumber, pre.firstChild);
+            
 
             diaryList.appendChild(pre);
         });
@@ -88,21 +79,21 @@ const timeStr = dateObj.toLocaleTimeString(); // 获取当前时间字符串
     //console.log(content)
     //console.log(JSON.stringify({content}));
 
-        // 发送日记内容到后台
-        fetch('/submit_diary', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({content:content}) // 请求体 将一个对象 {content: content} 转换为 JSON 格式的字符串。
-        })
-        .then(response => response.json())
-        .then(result => {
-            if (result.refresh) {
-                // 刷新页面
-                location.reload();
-            }
-        })
-        .catch(error => console.error('Error:', error));
+    // 发送日记内容到后台
+    fetch('/submit_diary', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({content:content}) // 请求体 将一个对象 {content: content} 转换为 JSON 格式的字符串。
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.refresh) {
+            // 刷新页面
+            location.reload();
+        }
+    })
+    .catch(error => console.error('Error:', error));
     });

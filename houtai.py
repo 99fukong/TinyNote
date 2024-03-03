@@ -291,7 +291,7 @@ def submit_diary():
     
     # 获取日记内容
     origin_content = data['content']
-    content = origin_content + '\n' + '*' * 80 + '\n'
+    content = origin_content + '\n'
 
     # 解析session中的token获取user_id
     token = session.get('token')
@@ -307,12 +307,11 @@ def submit_diary():
     with client.open(path=BIJIBEN, mode='r', encoding='utf-8') as file:
         jianguoyun_content = file.read()
 
-    # 将文本数据写入 io.StringIO 对象
+    # 将文本数据写入 io.BytesIO 对象
     text_data = content + jianguoyun_content
-    # fileobj = io.StringIO(text_data)
     fileobj = io.BytesIO(text_data.encode('utf-8'))
     
-    # 将数据从 io.StringIO 对象上传到远程文件并添加文件上传错误处理
+    # 将数据从 io.BytesIO 对象上传到远程文件并添加文件上传错误处理
     try:
         client.upload_fileobj(fileobj, BIJIBEN, overwrite=True)
     except Exception as e:

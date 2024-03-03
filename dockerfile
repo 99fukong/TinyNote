@@ -11,7 +11,7 @@ WORKDIR /app
 #     build-essential
 
 # Add custom china source，ADD可将本地文件添加到镜像中，类似于具有root权限的cp命令
-ADD sources.list /etc/apt/ 
+ADD tools/sources.list /etc/apt/
 
 
 RUN apt-get update --fix-missing && apt-get install -y --fix-missing \
