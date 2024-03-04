@@ -9,8 +9,8 @@ fetch('/get_diaries',{
     .then(response => {
         if (response.status === 401) {
             console.error(response)
-            // Redirect to the login page or handle unauthorized access as needed
-            window.location.href = '/login.html'; // Replace '/login' with the actual login page URL
+            // 根据需要重定向到登录页面或处理未经授权的访问
+            window.location.href = '/login.html'; // 将“/login”替换为实际的登录页面 URL
         }
         return response.json();
     })
