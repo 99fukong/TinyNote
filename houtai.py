@@ -1,5 +1,8 @@
 import os
 import pymysql
+import csv
+import re
+import conf as CONF
 import logging
 import time
 import io
@@ -141,8 +144,15 @@ def edit_diary(diary_id, tag, content):
             logging.error(f"Error editing diary: {e}")
     sync_diaries_to_jianguoyun()
     
+# # 编辑ztb日记    
+# def edit_paste(paste_id, content):
+#     with connection.cursor() as cursor:
+#         sql = "UPDATE paste SET content=%s WHERE id=%s"
+#         cursor.execute(sql, (content, paste_id))
+#         connection.commit()
     
     
+# # ztb
 # def get_pastes():
 #     with connection.cursor() as cursor:
 #         sql = "SELECT * FROM paste"
@@ -264,6 +274,7 @@ def get_diaries():
     diaries = get_user_diaries(user_id)
     return jsonify(diaries)
 
+# #ztb
 # @app.route('/get_pastes')
 # @login_required
 # def get_pastes_route():
@@ -320,15 +331,19 @@ def submit_diary():
     # 返回 JSON 响应，指示客户端刷新页面
     return jsonify({'status': 'success', 'refresh': True})
 
-# # 显示特定用户ztb
-# @app.route('/get_paste/<int:paste_id>')
+# # 添加ztb笔记
+# @app.route('/submit_paste', methods=['POST'])
 # @login_required
-# def get_paste_route(paste_id):
-#     paste = get_paste_by_id(paste_id)
-#     if paste:
-#         return jsonify(paste)
-#     else:
-#         return jsonify({'status': 'error', 'message': 'Paste not found'}), 404
+# def submit_paste():
+#     data = request.json
+#     content = data['content']
+#     token = session.get('token')
+#     user_id = verify_token(token)
+#     if user_id is None:
+#         return jsonify({'status': 'error', 'message': 'User not authenticated'})
+#     add_paste(user_id, content)  # 使用新的添加粘贴板条目的函数
+#     return jsonify({'status': 'success', 'refresh': True})
+
 
 
 #编辑笔记
@@ -347,6 +362,7 @@ def edit(diary_id):
         content = request.form['content']
         edit_diary(diary_id, tag, content)
         return redirect(url_for('index'))
+    
 # #编辑ztb
 # @app.route('/edit_paste/<int:paste_id>', methods=['POST'])
 # @login_required
@@ -357,7 +373,7 @@ def edit(diary_id):
 #     return jsonify({'status': 'success', 'message': 'Paste updated successfully'})
 
 
-#注册用户
+#用户登录
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
@@ -374,7 +390,7 @@ def login():
             return render_template('login.html', error="Invalid username or password")
         
         
-#登录笔记
+#用户注册
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'GET':
@@ -423,6 +439,54 @@ def delete(diary_id):
 # def delete_paste_route(paste_id):
 #     delete_paste(paste_id)
 #     return jsonify({'status': 'success', 'message': 'Paste deleted successfully'})
+
+
+
+
+#----------------------------csv-ztb-------------------------------------------------
+@app.route('/submit_ztb', methods=['POST'])
+def submit_diary_z():
+    # 获取 JSON 格式的表单数据
+    data = request.json
+    #print(data)
+
+    # 获取日记内容
+    origin_content = data['content']
+    content = origin_content+'\n'+'*'*80+'\n'
+
+    # 打开CSV文件并读取数据
+    
+    with open(CONF.ZTB_CSV_DIR, 'r+', newline='',encoding='utf-8') as file:
+        reader = csv.reader(file, delimiter=',')
+        data = list(reader)
+        
+        # 匹配标签，找到所有的标签
+        matches = re.findall(r"(?<!#)#\w+(?<!#)\s", content)
+        tags = [match.strip('# \n') for match in matches]
+        new_row = [content,",".join(tags)]
+
+        if not data:
+            data.insert(0, new_row)
+        else:
+            data.insert(1, new_row)
+        file.seek(0)
+        writer = csv.writer(file, delimiter=',')
+        writer.writerows(data)    
+
+    # 返回保存的日记
+    diary = {'content': content}
+    return jsonify(diary)
+
+@app.route('/get_ztb', methods=['GET'])
+def get_diaries_z():
+
+    with open(CONF.ZTB_CSV_DIR, 'r+', newline='',encoding='utf-8') as file:
+        reader = csv.reader(file, delimiter=',')
+        diaries = list(reader)
+        diaries = [{'content': line[0]} for line in diaries[1:]]
+
+    # 转换为字符串，二进制形式
+    return jsonify(diaries)
 
 
 if __name__ == '__main__':
