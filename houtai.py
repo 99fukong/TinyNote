@@ -70,14 +70,38 @@ while attempts < max_attempts:
 if attempts == max_attempts:
     raise ConnectionError("Failed to connect to MySQL after maximum attempts")
 
+
+#检查当前的连接是否有效，如果无效（例如，因为连接已经关闭），则尝试重新建立连接。
+def get_db_connection():
+    global connection
+    try:
+        # 尝试查询以检查连接是否仍然有效
+        connection.ping(reconnect=True)
+    except (pymysql.err.OperationalError, pymysql.err.InterfaceError, AttributeError):
+        # 连接无效，尝试重新连接
+        logging.info("Reconnecting to the MySQL database...")
+        connection = pymysql.connect(
+            host="mysql",
+            user="test",
+            password="123456",
+            database="diary_db",
+            charset='utf8mb4',
+            port=3306,
+            cursorclass=pymysql.cursors.DictCursor,
+        )
+    return connection
+
+
 # 创建数据库
 def create_database():
+    connection = get_db_connection()  # 获取有效的数据库连接
     with connection.cursor() as cursor:
         cursor.execute("CREATE DATABASE IF NOT EXISTS diary_db")
     connection.commit()
 
 # 创建用户表
 def create_user_table():
+    connection = get_db_connection()  # 获取有效的数据库连接
     with connection.cursor() as cursor:
         cursor.execute("""CREATE TABLE IF NOT EXISTS diary_db.user (
                           id INT NOT NULL AUTO_INCREMENT,
@@ -91,6 +115,7 @@ def create_user_table():
 
 # 创建日记表
 def create_diary_table():
+    connection = get_db_connection()  # 获取有效的数据库连接
     with connection.cursor() as cursor:
         cursor.execute("""CREATE TABLE IF NOT EXISTS diary_db.diary (
                         id INT NOT NULL AUTO_INCREMENT,
@@ -106,6 +131,7 @@ def create_diary_table():
     
     # 创建粘贴板表
 def create_paste_table():
+    connection = get_db_connection()  # 获取有效的数据库连接
     with connection.cursor() as cursor:
         cursor.execute("""CREATE TABLE IF NOT EXISTS diary_db.paste (
                         id INT NOT NULL AUTO_INCREMENT,
@@ -121,6 +147,7 @@ def create_paste_table():
 
 # 注册用户
 def register_user(username, password):
+    connection = get_db_connection()  # 获取有效的数据库连接
     with connection.cursor() as cursor:
         try:
             sql = "INSERT INTO user (username, password) VALUES (%s, %s)"
@@ -132,6 +159,7 @@ def register_user(username, password):
 
 # 编辑日记
 def edit_diary(diary_id, tag, content):
+    connection = get_db_connection()  # 获取有效的数据库连接
     # 添加日志
     logging.info(f"Editing diary with ID {diary_id}, tag: {tag}, content: {content}")
     with connection.cursor() as cursor:
@@ -162,6 +190,7 @@ def edit_diary(diary_id, tag, content):
 
 # 删除日记
 def delete_diary(diary_id):
+    connection = get_db_connection()  # 获取有效的数据库连接
     with connection.cursor() as cursor:
         sql = "DELETE FROM diary WHERE id=%s"
         cursor.execute(sql, (diary_id,))
@@ -178,6 +207,7 @@ def delete_diary(diary_id):
 
 # 添加日记
 def add_diary(tag, content, user_id):
+    connection = get_db_connection()  # 获取有效的数据库连接
     with connection.cursor() as cursor:
         sql = "INSERT INTO diary (tag, content, user_id) VALUES (%s, %s, %s)"
         cursor.execute(sql, (tag, content, user_id))
@@ -190,8 +220,10 @@ def add_diary(tag, content, user_id):
 #         cursor.execute(sql, (user_id, content))
 #         connection.commit()
 
+
 # 获取当前登录用户的所有日记，按创建时间降序排序
 def get_user_diaries(user_id):
+    connection = get_db_connection()  # 获取有效的数据库连接
     with connection.cursor() as cursor:
         # sql = "SELECT * FROM diary WHERE user_id=%s ORDER BY created_at DESC"
         sql = "SELECT * FROM diary WHERE user_id=%s ORDER BY id DESC"
@@ -201,6 +233,7 @@ def get_user_diaries(user_id):
 
 # 用户登录
 def login_user(username, password):
+    connection = get_db_connection()  # 获取有效的数据库连接
     with connection.cursor() as cursor:
         cursor.execute("SELECT * FROM user WHERE username=%s AND password=%s", (username, password))
         user = cursor.fetchone()
@@ -243,6 +276,7 @@ def login_required(route_function):
 
 #获取所有日记内容，并将它们格式化为一个字符串
 def get_all_diaries_formatted():
+    connection = get_db_connection()  # 获取有效的数据库连接
     with connection.cursor() as cursor:
         sql = "SELECT * FROM diary ORDER BY id DESC"
         cursor.execute(sql)
@@ -255,6 +289,7 @@ def get_all_diaries_formatted():
     
 #坚果云更新函数
 def sync_diaries_to_jianguoyun():
+    connection = get_db_connection()  # 获取有效的数据库连接
     # 获取格式化后的所有日记内容
     formatted_diaries = get_all_diaries_formatted()
     # 将文本数据转换为字节流
