@@ -7,7 +7,7 @@ import logging
 import time
 import io
 from webdav4.client import Client
-from flask import Flask, request, jsonify, render_template, send_from_directory, url_for, redirect, session
+from flask import Flask, request, jsonify, render_template, send_from_directory, url_for, redirect, session, make_response
 from dotenv import load_dotenv
 import jwt
 from datetime import datetime, timedelta
@@ -460,6 +460,16 @@ def add():
     add_diary( content, user_id)
     return redirect(url_for('index'))
 
+#删除cookie接收POST请求
+@app.route('/clear_cookie', methods=['POST'])
+def clear_cookie():
+    # 创建响应对象并设置成功消息和状态码
+    response = make_response("Cookie cleared successfully", 200)
+    # 设置名为'session'的cookie为空值，并设置过期时间为0，即立即失效
+    # response.set_cookie('session', '', expires=0)
+    session.clear()  # 清空 session 数据
+    return response
+    
 
 #删除笔记
 @app.route('/delete/<int:diary_id>', methods=['POST'])

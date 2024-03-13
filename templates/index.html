@@ -51,9 +51,13 @@
 <body>
     <div class="container">
         <!-- 你提供的按钮 -->
-        <a href="tp.html" class="button">图片</a>
+        <a href="tp.html" class="button" target="_blank">图片</a>
         <a href="https://lzw.fukonglzw.cn:6060/" class="button" target="_blank">图床</a>
         <a href="ztb.html" class="button">粘贴板</a>
+        <div class="button"> 
+            <button id="clearCookieBtn">注销</button>
+        </div>
+        <!-- <a href="" class="button">注销</a> -->
 
         <!-- 日记表单 -->
         <form id="diary-form">
@@ -80,5 +84,31 @@
 
     <!-- 引入样式表 -->
     <script src="static/index.js"></script>
+    <script>
+        // 监听清除Cookie按钮的点击事件
+        document.getElementById("clearCookieBtn").addEventListener("click", function() {
+            // 显示确认弹窗
+            if (confirm("是否注销")) {
+              // 发送POST请求到后端接口清除Cookie
+              fetch('/clear_cookie', {
+                method: 'POST',
+                credentials: 'same-origin',  // 发送跨域请求时携带cookie
+              })
+              .then(response => {
+                if (response.ok) {
+                  console.log("Cookie cleared successfully");// 输出清除成功的消息到控制台
+                  window.location.reload(); 
+                } else {
+                  console.error("Failed to clear cookie");// 输出清除失败的消息到控制台
+                }
+              })
+              .catch(error => {
+                console.error("Error while clearing cookie:", error);// 输出错误信息到控制台
+              });
+            } else {
+              console.log("取消注销");
+            }
+          });
+    </script>
 </body>
 </html>
