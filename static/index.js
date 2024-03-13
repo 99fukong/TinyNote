@@ -1,4 +1,4 @@
-// 获取日记列表
+// 获取token
 token = localStorage.getItem('jwtToken');
 
 fetch('/get_diaries',{
