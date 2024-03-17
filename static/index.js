@@ -1,3 +1,5 @@
+// 页面加载完成后执行的代码
+document.addEventListener('DOMContentLoaded', function () {
 // 获取token
 token = localStorage.getItem('jwtToken');
 
@@ -27,8 +29,9 @@ fetch('/get_diaries',{
 
         // 创建编辑按钮
         const editButton = document.createElement('button');
-        editButton.textContent = '编辑';
-        editButton.style.marginLeft = '10px';
+        editButton.textContent = '编辑'; 
+        editButton.style.borderRadius = '5px'; // 使用 5px 的圆角，可以根据需要调整值
+        editButton.style.marginRight = '10px'; //右外边距设置为 10 像素
         editButton.onclick = () => {
             // 跳转到编辑页面，传递日记的ID或其他标识符
             window.location.href = `/edit/${diary.id}`;
@@ -40,7 +43,8 @@ fetch('/get_diaries',{
         // 创建删除按钮
         const delButton = document.createElement('button');
         delButton.textContent = '删除';
-        delButton.style.marginLeft = '10px';
+        delButton.style.borderRadius = '5px'; // 使用 5px 的圆角，可以根据需要调整值
+        delButton.style.marginRight = '10px'; ////右外边距设置为 10 像素
         delButton.onclick = () => {
             // 发送删除请求到后台
             fetch(`/delete/${diary.id}`, {
@@ -97,3 +101,44 @@ const timeStr = dateObj.toLocaleTimeString(); // 获取当前时间字符串
     })
     .catch(error => console.error('Error:', error));
     });
+
+//注销功能
+document.getElementById("clearCookieBtn").addEventListener("click", function() {
+    // 显示确认弹窗
+    if (confirm("是否注销")) {
+        // 发送POST请求到后端接口清除Cookie
+        fetch('/clear_cookie', {
+        method: 'POST',
+        credentials: 'same-origin',  // 发送跨域请求时携带cookie
+        })
+        .then(response => {
+        if (response.ok) {
+            console.log("Cookie cleared successfully");// 输出清除成功的消息到控制台
+            window.location.reload(); 
+        } else {
+            console.error("Failed to clear cookie");// 输出清除失败的消息到控制台
+        }
+        })
+        .catch(error => {
+        console.error("Error while clearing cookie:", error);// 输出错误信息到控制台
+        });
+    } else {
+        console.log("取消注销");
+    }
+    });
+
+        // 获取 diary-content 文本框元素
+    const diaryContent = document.getElementById('diary-content');
+
+    // 监听页面关闭事件
+    window.addEventListener('beforeunload', function (e) {
+        // 检查文本框中是否有内容
+        if (diaryContent.value.trim() !== '') {
+            // 弹出确认提示框
+            e.preventDefault();
+            e.returnValue = ''; // 兼容旧版浏览器
+            return '您的日记内容尚未保存，确定要离开吗？'; // 兼容现代浏览器
+        }
+    });
+
+});

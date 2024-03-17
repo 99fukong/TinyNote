@@ -68,7 +68,7 @@ fetch('/get_diaries',{
             diaryList.appendChild(pre);
         });
     });
-
+ 
 const dateObj = new Date(); // new Date() 创建一个新的 Date 对象时，它会自动根据当前系统的日期和时间信息，初始化一个包含各种日期和时间属性的对象。
 const dateStr = dateObj.toLocaleDateString(); // 获取当前日期字符串
 const timeStr = dateObj.toLocaleTimeString(); // 获取当前时间字符串
@@ -98,3 +98,30 @@ form.addEventListener('submit', event => { //使用 .addEventListener() 方法�
         }
     });
 });
+
+   
+// 监听清除Cookie按钮的点击事件
+document.getElementById("clearCookieBtn").addEventListener("click", function() {
+    // 显示确认弹窗
+    if (confirm("是否注销")) {
+        // 发送POST请求到后端接口清除Cookie
+        fetch('/clear_cookie', {
+        method: 'POST',
+        credentials: 'same-origin',  // 发送跨域请求时携带cookie
+        })
+        .then(response => {
+        if (response.ok) {
+            console.log("Cookie cleared successfully");// 输出清除成功的消息到控制台
+            window.location.reload(); 
+        } else {
+            console.error("Failed to clear cookie");// 输出清除失败的消息到控制台
+        }
+        })
+        .catch(error => {
+        console.error("Error while clearing cookie:", error);// 输出错误信息到控制台
+        });
+    } else {
+        console.log("取消注销");
+    }
+    });
+
