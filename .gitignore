@@ -4,4 +4,4 @@ diary.txt*
 .env_*
 .env
 *csv
-mysql/ 
+mysql/*
