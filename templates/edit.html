@@ -16,9 +16,26 @@
         <textarea id="content" name="content">{{ diary['content'] }}</textarea><br>
         <input type="submit" value="Save Changes">
     </form>
-    <script>
+    <!-- <script>
+        // 页面加载完成后执行的代码
+        document.addEventListener('DOMContentLoaded', function () {
         
-    </script>
+            // 获取 diary-content 文本框元素
+            const diaryContent = document.getElementById('content');
+
+            // 监听页面关闭事件
+            window.addEventListener('beforeunload', function (e) {
+                // 检查文本框中是否有内容
+                if (content.value.trim() !== '') {
+                    // 弹出确认提示框
+                    e.preventDefault();
+                    e.returnValue = ''; // 兼容旧版浏览器
+                    return '您的日记内容尚未保存，确定要离开吗？'; // 兼容现代浏览器
+                }
+            });
+
+        });
+    </script> -->
 </body>
 </html>
 
