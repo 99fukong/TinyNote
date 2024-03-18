@@ -3,6 +3,22 @@ document.addEventListener('DOMContentLoaded', function () {
 // 获取token
 token = localStorage.getItem('jwtToken');
 
+// 函数用于在 <pre> 元素中将URL替换为超链接
+function replaceURLsWithLinks(pre_element) {
+    // <pre> 元素的 HTML 内容
+    let content = pre_element.innerHTML;
+    // 正则表达式用于查找文本中的URL
+    let urlRegex = /(?<=^|\s)(https?:\/\/[^\s]+)/g;
+    // 将URL替换为超链接
+    content = content.replace(urlRegex, function (url) {
+        return '<a href="' + url + '">' + url + '</a>';
+    });
+    // 使用替换后的内容设置 <pre> 元素的HTML内容
+    // pre_element.textContent = content;
+    pre_element.innerHTML = content;
+}
+
+
 fetch('/get_diaries',{
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -25,6 +41,10 @@ fetch('/get_diaries',{
             //console.log(index)
             const pre = document.createElement('pre');
             pre.textContent = content;
+            //用超链接替换 ​​URL
+            replaceURLsWithLinks(pre);
+            // const pre = document.createElement('pre');
+            // pre.textContent = content;
 
 
         // 创建编辑按钮
@@ -73,13 +93,19 @@ fetch('/get_diaries',{
 const dateObj = new Date(); // new Date() 创建一个新的 Date 对象时，它会自动根据当前系统的日期和时间信息，初始化一个包含各种日期和时间属性的对象。
 const dateStr = dateObj.toLocaleDateString(); // 获取当前日期字符串
 const timeStr = dateObj.toLocaleTimeString(); // 获取当前时间字符串
-    // 提交日记表单
-    const form = document.getElementById('diary-form'); // document.getElementById()  方法获取了 ID 为 diary-form 的表单元素节点：
-    form.addEventListener('submit', event => { //使用 .addEventListener() 方法，在该表单元素上注册一个 submit 事件监听器。这个监听器会在表单提交时被触发，并执行指定的回调函数。
-        event.preventDefault(); //不刷新
 
-        const content_old = document.getElementById('diary-content').value; //获取文本框中的值。
-        const content = `## ${dateStr} ${timeStr}:\n` + content_old; //日期+时间 换行 +输入内容。
+// 提交日记表单
+const form = document.getElementById('diary-form'); // document.getElementById()  方法获取了 ID 为 diary-form 的表单元素节点：
+const contentInput = document.getElementById('diary-content');
+form.addEventListener('submit', event => { //使用 .addEventListener() 方法，在该表单元素上注册一个 submit 事件监听器。这个监听器会在表单提交时被触发，并执行指定的回调函数。
+    event.preventDefault(); //不刷新
+
+    const content_old = contentInput.value; //获取文本框中的值。
+    const content = `## ${dateStr} ${timeStr}:\n` + content_old; //日期+时间 换行 +输入内容。
+    //清空表单
+    contentInput.value = ''; // 清空文本框内容
+
+
     //console.log(content)
     //console.log(JSON.stringify({content}));
 
