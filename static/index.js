@@ -47,6 +47,7 @@ fetch('/get_diaries',{
             // pre.textContent = content;
 
 
+            
         // 创建编辑按钮
         const editButton = document.createElement('button');
         editButton.textContent = '编辑'; 
@@ -57,7 +58,6 @@ fetch('/get_diaries',{
             window.location.href = `/edit/${diary.id}`;
         };
         pre.appendChild(editButton);
-
 
             
         // 创建删除按钮
@@ -81,10 +81,19 @@ fetch('/get_diaries',{
                 })
                 .catch(error => console.error('删除失败：', error));
             };
-            pre.appendChild(delButton);
 
+            // 创建容器元素
+            const buttonContainer = document.createElement('div');
+            buttonContainer.classList.add('button-container'); // 可以添加样式类以方便样式设置
+
+            // 将编辑按钮添加到容器
+            buttonContainer.appendChild(editButton);
+            // 将删除按钮添加到容器
+            buttonContainer.appendChild(delButton);
             
-
+            // 将容器添加到日记的 <pre> 元素中
+            pre.appendChild(buttonContainer);
+            
             diaryList.appendChild(pre);
         });
     })
