@@ -8,4 +8,4 @@ services:
       - ./:/app
     restart: always
     # command: sh -c "tail -f /dev/null"
-    command : sh -c "python /app/houtai.py"
+    command : sh -c "python /app/Core.py"

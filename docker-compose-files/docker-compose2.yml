@@ -10,11 +10,11 @@ services:
       - ../data:/app/data
       - ../templates:/app/templates
       - ../conf.py:/app/conf.py
-      - ../houtai.py:/app/houtai.py
+      - ../Core.py:/app/Core.py
       
       - ./data2/diary_2.csv:/app/diary.csv
       - ./data2/ztb_2.csv:/app/ztb.csv
       - ./data2/.env_2:/app/.env
     restart: always
     # command: sh -c "tail -f /dev/null"
-    command : sh -c "python /app/houtai.py"
+    command : sh -c "python /app/Core.py"

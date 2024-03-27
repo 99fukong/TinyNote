@@ -11,22 +11,62 @@
 
         body {
             font-family: "Source Code Pro","Courier New","等线", Courier, monospace;
-            padding: 10px; /* 页面整体的内边距 */
+            /*padding: 10px;*/ /* 页面整体的内边距 */
             background-color: #333;
             color: #c9cdd1;
             margin: 0; /* 去除默认的外边距 */
+            display: flex;
+            justify-content: center;
+            align-items: stretch;
+        }
+
+        /* 左边容器样式 */
+        .left-container {
+            flex: 1;
+            background-color: #555;
+            min-width: 80px;
+            max-width: 200px;
+            flex-direction: column; 
+            float: left; /* 新增：将容器浮动到左侧 */
+            display: flex; /* 使用 Flexbox 布局 */
+            flex-direction: column; /* 垂直排列子元素 */
+        
+        }
+
+        /* 右边容器样式 */
+        .right-container {
+            flex: 1;
+            background-color: #555;
+            min-width: 80px;
+            max-width: 200px;
+            float: right; /* 新增：将容器浮动到右侧 */
+            display: flex; /* 使用 Flexbox 布局 */
+            flex-direction: column; /* 垂直排列子元素 */
         }
 
         /* 整体页面 */
         .container {
-            max-width: 100ch;
-            margin-left: auto;
-            margin-right: auto;
+            max-width: 1000px; /* 最大宽度 */
+            padding: 10px;
+            margin: 0 auto; /* 居中 */
+            display: flex;
+            flex-direction: column; /* 垂直排列子元素 */
+            align-items: stretch;
         }
+
+        @media (max-width: 110ch) {
+            .right-container, .left-container {
+                display: none;
+            }
+            .container {
+                max-width: 100%;
+            }
+        }
+        
 
         /* 按钮 */
         .button {
-            display: inline-block;
+            box-sizing: border-box; /* 使用盒子模型，使设置的宽度和高度包括边框和内边距 */
             padding: 4px 4px; /* 上下左右的内边距均为 4px */
             background-color: #ffffff; /* 设置背景颜色为白色 */
             color: #333; /* 设置文字颜色为深灰色 */
@@ -34,9 +74,11 @@
             border-radius: 4px; /* 设置圆角半径为 4px */
             font-size: 15px; /* 设置字体大小为 15px */
             border: none; /* 移除边框 */
-            margin-bottom: 10px; /* 调整下外边距为 10px */
+            margin: 10px 10px 10px 10px; /* 设置外边距：上右下左 */
             cursor: pointer; /* 设置鼠标悬停时的样式为手型 */
-            margin: 0; 
+            width: 60px; /* 设置宽度为100像素 */
+            height: 30px; /* 设置高度为40像素 */
+           
         }
         /* 保存按钮*/
         button[type="submit"] {
@@ -91,7 +133,8 @@
 </head>
 <body>
     <link rel="stylesheet" href="">
-    <div class="container">
+
+    <div class="left-container">
         <!-- 你提供的按钮 -->
         <a href="tp.html" class="button" target="_blank">图片</a>
         <a href="https://lzw.fukonglzw.cn:6060/" class="button" target="_blank">图床</a>
@@ -99,6 +142,11 @@
         <div class="button"> 
             <button id="clearCookieBtn">注销</button>
         </div>
+    </div>
+
+
+
+    <div class="container">
 
 
         <!-- 日记表单 -->
@@ -112,6 +160,10 @@
         <div id="diary-list">
 
         </div>
+    </div>
+
+    <div class="right-container">
+        <p>右边</p>
     </div>
 
     <!-- 引入样式表 -->

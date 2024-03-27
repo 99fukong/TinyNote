@@ -12,15 +12,15 @@ services:
        - ./:/app
      restart: always
      # command: sh -c "tail -f /dev/null"
-     command: sh -c "python -m debugpy --listen 0.0.0.0:5678 --wait-for-client  /app/houtai.py"
+     command: sh -c "python -m debugpy --listen 0.0.0.0:5678 --wait-for-client  /app/Core.py"
 ```
 ### 容器启动时，执行的command 命令
 注意这一行：
 ```
-command: sh -c "python -m debugpy --listen 0.0.0.0:5678 --wait-for-client  /app/houtai.py"
+command: sh -c "python -m debugpy --listen 0.0.0.0:5678 --wait-for-client  /app/Core.py"
 ```
 
-相比普通的docker- compose.yml，这里的command改变了，启动了debugpy模块，`/app/houtai.py`主程序是要调试的程序。
+相比普通的docker- compose.yml，这里的command改变了，启动了debugpy模块，`/app/Core.py`主程序是要调试的程序。
 
 chatgpt 的解释如下：
 
@@ -30,7 +30,7 @@ chatgpt 的解释如下：
 
 - `sh -c`：这是一个用于在容器中运行命令的 Shell 命令。`-c` 参数表示后面的字符串将作为命令执行。
 
-- `"python -m debugpy --listen 0.0.0.0:5678 --wait-for-client /app/houtai.py"`：这是要执行的命令。它使用了 Python 的 `debugpy` 模块，用于启动 Python 调试器。
+- `"python -m debugpy --listen 0.0.0.0:5678 --wait-for-client /app/Core.py"`：这是要执行的命令。它使用了 Python 的 `debugpy` 模块，用于启动 Python 调试器。
 
   - `python -m debugpy`：使用 `python` 命令来执行 `debugpy` 模块。`-m` 参数表示执行模块。
 
@@ -38,11 +38,11 @@ chatgpt 的解释如下：
 
   - `--wait-for-client`：调试器将等待客户端连接。这意味着调试器会在启动后暂停执行，并等待外部的调试客户端连接到它。
 
-  - `/app/houtai.py`：这是要调试的 Python 脚本的路径。在这个例子中，它指定了 `/app` 目录下的 `houtai.py` 文件作为要调试的目标。
+  - `/app/Core.py`：这是要调试的 Python 脚本的路径。在这个例子中，它指定了 `/app` 目录下的 `Core.py` 文件作为要调试的目标。
 
 该命令的目的是在容器中启动 Python 调试器，并等待外部的调试客户端连接。通过连接调试客户端，你可以与正在运行的 Python 代码进行交互式调试。
 
-请注意，要成功运行这个命令，你需要确保在容器中已经安装了 Python 和 `debugpy` 模块，并将要调试的 Python 脚本放置在 `/app/houtai.py` 路径下你的容器中使用了不同的路径，请相应地修改命令）。
+请注意，要成功运行这个命令，你需要确保在容器中已经安装了 Python 和 `debugpy` 模块，并将要调试的 Python 脚本放置在 `/app/Core.py` 路径下你的容器中使用了不同的路径，请相应地修改命令）。
 
 注意启动容器前，需要安装 `debugpy` ，即容器镜像需要先安装好该模块：`pip install debugpy`, 本项目中 requirements.txt 已经包含 `debugpy`, 构建镜像时会自动安装该模块。
 

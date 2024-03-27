@@ -20,9 +20,9 @@ services:
     #   MYSQL_PASSWORD: 123456
     #   MYSQL_DB: diary_db
     restart: always
-    #command : sh -c "python /app/houtai.py"
+    #command : sh -c "python /app/Core.py"
     command: >
-      sh -c "python -m debugpy --listen 0.0.0.0:8889 --wait-for-client  /app/houtai.py"
+      sh -c "python -m debugpy --listen 0.0.0.0:8889 --wait-for-client  /app/Core.py"
     networks:
       - net
 
