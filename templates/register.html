@@ -4,19 +4,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Registration and Login</title>
+    <title>TinyNote</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='register.css') }}">
 </head>
 <body>
     <div class="container">
-        <h1>User Registration</h1>
+        <h2>创建您的账户</h2>
         <form action="/register" method="POST">
-            <label for="username">Username:</label><br>
+            <label for="username">用户名</label><br>
             <input type="text" id="username" name="username" required><br>
-            <label for="password">Password:</label><br>
+            <label for="password">密码</label><br>
             <input type="password" id="password" name="password" required><br><br>
-            <button type="submit">Register</button>
+            <button type="submit">注册</button>
         </form>
+        <p>已有账户？<a href="/login" style="text-decoration: none;">登录</a></p>
 
         {% if error %}
             <p>{{ error }}</p>

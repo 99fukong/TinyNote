@@ -1,20 +1,40 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
+    font-family: "Source Code Pro", "Courier New", "等线", Courier, monospace;
+    background-color: rgb(24, 24, 27);
+    display: flex;
+    justify-content: center; /* 水平居中 */
+    align-items: center; /* 垂直居中 */
+    height: 100vh; /* 让 body 高度占满视窗 */
+    margin: 0; /* 去除默认的 margin */
 }
 
-.container {
-    max-width: 400px;
-    margin: 50px auto;
+* {
+    box-sizing: border-box;
+    border-radius: 6px;
+}
+
+.container {    
+    max-width: 350px;
+    min-width: 350px;
     padding: 20px;
-    background-color: #fff;
+    background-color: #333;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
 }
 
-h1 {
+
+p {
+    color: #818181;
+}
+
+a {
+    color: #007bff;
+}
+
+h2 {
     text-align: center;
     margin-bottom: 20px;
+    color: #818181;
 }
 
 form {
@@ -23,7 +43,8 @@ form {
 }
 
 label {
-    font-weight: bold;
+    font-weight: normal;
+    color: #818181;
 }
 
 input[type="text"],
@@ -31,7 +52,7 @@ input[type="password"] {
     width: 100%;
     padding: 10px;
     margin-bottom: 20px;
-    border: 1px solid #ccc;
+    border: 1px solid #007bff;
     border-radius: 4px;
     box-sizing: border-box;
 }
