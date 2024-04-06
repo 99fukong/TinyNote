@@ -528,7 +528,7 @@ def get_diaries_z():
     with open(CONF.ZTB_CSV_DIR, 'r+', newline='',encoding='utf-8') as file:
         reader = csv.reader(file, delimiter=',')
         diaries = list(reader)
-        diaries = [{'content': line[0]} for line in diaries[1:]]
+        diaries = [{'content': line[0]} for line in diaries]
 
     # 转换为字符串，二进制形式
     return jsonify(diaries)
