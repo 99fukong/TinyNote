@@ -59,28 +59,50 @@ fetch('/get_diaries',{
         };
         pre.appendChild(editButton);
 
-            
+        //创建复制按钮
+
+        const copyButton = document.createElement('button');
+        copyButton.textContent = '复制';
+        copyButton.style.borderRadius = '5px';
+        copyButton.style.marginRight = '10px';
+        copyButton.onclick = () => {
+            // 将日记内容复制到剪贴板
+            navigator.clipboard.writeText(content)
+                // .then(() => {
+                //     alert('日记已复制到粘贴板！');
+                // })
+                // .catch(err => {
+                //     console.error('复制失败：', err);
+                // });
+        };
+        pre.appendChild(copyButton);
+
+
         // 创建删除按钮
         const delButton = document.createElement('button');
         delButton.textContent = '删除';
-        delButton.style.borderRadius = '5px'; // 使用 5px 的圆角，可以根据需要调整值
-        delButton.style.marginRight = '10px'; ////右外边距设置为 10 像素
+        delButton.style.borderRadius = '5px';
+        delButton.style.marginRight = '10px';
         delButton.onclick = () => {
-            // 发送删除请求到后台
-            fetch(`/delete/${diary.id}`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-            .then(() => {
+            // 弹出确认对话框
+            if (confirm("确定要删除这篇日记吗？")) {
+                // 用户点击确认后执行删除操作
+                fetch(`/delete/${diary.id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                .then(() => {
                     // 从页面上删除该日记
                     diaryList.removeChild(pre);
-                    alert('删除成功！');
-                        location.reload();
+                    // alert('删除成功！');
+                    // location.reload();
                 })
                 .catch(error => console.error('删除失败：', error));
-            };
+            }
+        };
+
 
             // 创建容器元素
             const buttonContainer = document.createElement('div');
@@ -90,6 +112,8 @@ fetch('/get_diaries',{
             buttonContainer.appendChild(editButton);
             // 将删除按钮添加到容器
             buttonContainer.appendChild(delButton);
+            // 将复制按钮添加到容器
+            buttonContainer.appendChild(copyButton);
             
             // 将容器添加到日记的 <pre> 元素中
             pre.appendChild(buttonContainer);
