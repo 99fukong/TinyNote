@@ -50,7 +50,11 @@
             color: #333;
             cursor: pointer;
             margin-bottom: 10px; /* 下外边距为 10px */
-        }        
+        }
+        
+         .button:hover {
+            background-color: #a7a3a3; /* 设置鼠标悬停时的背景颜色 */
+        }       
 
         /* 输入框 */
         #diary-content {
@@ -64,6 +68,7 @@
 
         /* 日记块 */
         pre {
+            position: relative; /* 添加这行 */
             white-space: pre-wrap;
             word-wrap: break-word;
             width: 100%;
@@ -88,6 +93,55 @@
             color: rgb(255, 102, 0); /* 设置鼠标悬停时超链接的颜色 */
             text-decoration: none; /* 添加下划线效果 */
         }
+
+        /* 悬浮窗口样式 */
+        .popup {
+            border-radius: 5px;
+            z-index: 1000; /* 确保它在顶层 */
+            display: none; /* 默认不显示 */
+            background-color: #27272A;
+            border: 1px solid #27272A;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 0px 0px;
+            width: 100px;
+            height: 110px;
+            position: absolute;
+
+            
+        }
+
+        .popup button {
+            padding: 8px 12px; /* 调整按钮内边距 */
+            background-color: #ffffff; /* 设置按钮背景颜色 */
+            color: #333; /* 设置按钮文字颜色 */
+            border: none; /* 移除按钮边框 */
+            border-radius: 5px; /* 设置按钮圆角 */
+            cursor: pointer; /* 设置鼠标样式为手型 */
+            margin-bottom: 5px; /* 调整按钮之间的垂直间距 */
+            display: block; /* 设置按钮为块级元素 */
+            width: 100%; /* 设置按钮宽度为父容器宽度 */
+        }
+
+        .popup button:hover {
+            background-color: #eaeaea; /* 设置鼠标悬停时的背景颜色 */
+        }
+
+
+        /* 按钮容器样式 */
+        /*.button-container {
+            display: flex;
+        }*/
+
+        /* 三个点图标样式 */
+        .ellipsis-icon {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            cursor: pointer;
+            padding: 0 8px; /* 如果需要添加内边距的话 */
+            border: 1px transparent solid; /* 如果需要添加边框的话 */
+        }
+
 
     </style>
 </head>

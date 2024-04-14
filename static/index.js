@@ -1,92 +1,77 @@
-// 页面加载完成后执行的代码
 document.addEventListener('DOMContentLoaded', function () {
-// 获取token
-token = localStorage.getItem('jwtToken');
+// 从本地存储获取令牌
+const token = localStorage.getItem('jwtToken');
 
-// 函数用于在 <pre> 元素中将URL替换为超链接
+// 将URL替换为超链接的函数
 function replaceURLsWithLinks(pre_element) {
-    // <pre> 元素的 HTML 内容
     let content = pre_element.innerHTML;
-    // 正则表达式用于查找文本中的URL
     let urlRegex = /(?<=^|\s)(https?:\/\/[^\s]+)/g;
-    // 将URL替换为超链接
     content = content.replace(urlRegex, function (url) {
         return '<a href="' + url + '">' + url + '</a>';
     });
-    // 使用替换后的内容设置 <pre> 元素的HTML内容
-    // pre_element.textContent = content;
     pre_element.innerHTML = content;
 }
 
+// 获取日记列表元素
+const diaryList = document.getElementById('diary-list');
 
-fetch('/get_diaries',{
-        headers: {
-            'Authorization': `Bearer ${token}`,
-        }
-    })
-    .then(response => {
-        if (response.status === 401) {
-            console.error(response)
-            // 根据需要重定向到登录页面或处理未经授权的访问
-            window.location.href = '/login.html'; // 将“/login”替换为实际的登录页面 URL
-        }
-        return response.json();
-    })
-    .then(diaries => {
-        // 在页面上显示日记列表
-        const diaryList = document.getElementById('diary-list'); //获取 ID 为 diary-list 的元素节点对象，并将它赋值给变量 diaryList
-        diaries.forEach(diary => { //.forEach() 方法遍历 diaries 数组中的每个日记对象  //diaries 是一个数组
-            const content = diary.content;
-            const index = diary.lineNumber;
-            //console.log(index)
-            const pre = document.createElement('pre');
-            pre.textContent = content;
-            //用超链接替换 ​​URL
-            replaceURLsWithLinks(pre);
-            // const pre = document.createElement('pre');
-            // pre.textContent = content;
+// 从服务器获取日记
+fetch('/get_diaries', {
+    headers: {
+        'Authorization': `Bearer ${token}`,
+    }
+})
+.then(response => {
+    if (response.status === 401) {
+        console.error(response)
+        // 如果未授权，重定向到登录页面
+        window.location.href = '/login.html';
+    }
+    return response.json();
+})
+.then(diaries => {
+    // 遍历日记列表
+    diaries.forEach(diary => {
+        const content = diary.content;
+        const pre = document.createElement('pre');
+        pre.textContent = content;
 
+        // 创建三个点图标
+        const ellipsisIcon = document.createElement('span');
+        ellipsisIcon.innerHTML = '&#8942;';
+        ellipsisIcon.classList.add('ellipsis-icon');
 
-            
+        // 创建悬浮窗口
+        const popup = document.createElement('div');
+        popup.classList.add('popup');
+
         // 创建编辑按钮
         const editButton = document.createElement('button');
-        editButton.textContent = '编辑'; 
-        editButton.style.borderRadius = '5px'; // 使用 5px 的圆角，可以根据需要调整值
-        editButton.style.marginRight = '10px'; //右外边距设置为 10 像素
+        editButton.textContent = '编辑';
         editButton.onclick = () => {
-            // 跳转到编辑页面，传递日记的ID或其他标识符
+            // 点击编辑按钮跳转到编辑页面
             window.location.href = `/edit/${diary.id}`;
+            popup.style.display = 'none'; // 添加这行代码来隐藏悬浮窗
         };
-        pre.appendChild(editButton);
+        popup.appendChild(editButton);
 
-        //创建复制按钮
-
+        // 创建复制按钮
         const copyButton = document.createElement('button');
         copyButton.textContent = '复制';
-        copyButton.style.borderRadius = '5px';
-        copyButton.style.marginRight = '10px';
         copyButton.onclick = () => {
             // 将日记内容复制到剪贴板
             navigator.clipboard.writeText(content)
-                // .then(() => {
-                //     alert('日记已复制到粘贴板！');
-                // })
-                // .catch(err => {
-                //     console.error('复制失败：', err);
-                // });
+            popup.style.display = 'none'; // 添加这行代码来隐藏悬浮窗
         };
-        pre.appendChild(copyButton);
-
+        popup.appendChild(copyButton);
 
         // 创建删除按钮
         const delButton = document.createElement('button');
         delButton.textContent = '删除';
-        delButton.style.borderRadius = '5px';
-        delButton.style.marginRight = '10px';
         delButton.onclick = () => {
             // 弹出确认对话框
             if (confirm("确定要删除这篇日记吗？")) {
-                // 用户点击确认后执行删除操作
+                // 发送删除日记的请求
                 fetch(`/delete/${diary.id}`, {
                     method: 'POST',
                     headers: {
@@ -94,53 +79,116 @@ fetch('/get_diaries',{
                     }
                 })
                 .then(() => {
-                    // 从页面上删除该日记
+                    // 从页面中删除日记
                     diaryList.removeChild(pre);
-                    // alert('删除成功！');
-                    // location.reload();
                 })
                 .catch(error => console.error('删除失败：', error));
             }
+            popup.style.display = 'none'; // 添加这行代码来隐藏悬浮窗
         };
+        popup.appendChild(delButton);
 
+        // 将悬浮窗口添加到三个点图标中
+        ellipsisIcon.appendChild(popup);
+        // 将三个点图标添加到日记元素中
+        pre.appendChild(ellipsisIcon);
+        // 将日记元素添加到日记列表中
+        diaryList.appendChild(pre);
 
-            // 创建容器元素
-            const buttonContainer = document.createElement('div');
-            buttonContainer.classList.add('button-container'); // 可以添加样式类以方便样式设置
+        // // 点击三个点图标显示或隐藏悬浮窗
+        // ellipsisIcon.addEventListener('click', function(event) {
+        //     event.stopPropagation();
+        //     const rect = ellipsisIcon.getBoundingClientRect(); // 获取三个点图标的位置和尺寸
+        //     popup.style.display = (popup.style.display === 'block') ? 'none' : 'block'; // 切换悬浮窗口的显示状态
+        //     if (popup.style.display === 'block') {
+        //         const popupWidth = popup.offsetWidth; // 获取悬浮窗口的宽度
+        //         popup.style.left = `${rect.left - popupWidth}px`; // 设置悬浮窗口的left值为三个点图标的左边缘位置减去悬浮窗口的宽度
+        //         popup.style.top = `${rect.top}px`; // 设置悬浮窗口的top值为三个点图标的顶部位置，使其在垂直方向上大致对齐
+        //         document.body.appendChild(popup); // 确保每次显示时都重新计算位置并移动到 body 下
+        //     }
+        // });
 
-            // 将编辑按钮添加到容器
-            buttonContainer.appendChild(editButton);
-            // 将删除按钮添加到容器
-            buttonContainer.appendChild(delButton);
-            // 将复制按钮添加到容器
-            buttonContainer.appendChild(copyButton);
-            
-            // 将容器添加到日记的 <pre> 元素中
-            pre.appendChild(buttonContainer);
-            
-            diaryList.appendChild(pre);
+        // 当鼠标悬停在三个点图标上时显示悬浮窗
+        ellipsisIcon.addEventListener('mouseenter', function(event) {
+            const rect = ellipsisIcon.getBoundingClientRect();
+            popup.style.display = 'block'; // 直接显示悬浮窗，不再需要切换显示状态
+            const popupWidth = popup.offsetWidth;
+            popup.style.left = `${rect.left - popupWidth}px`; // 设置悬浮窗的位置
+            popup.style.top = `${rect.top}px`;
+            document.body.appendChild(popup);
         });
-    })
-    .catch(error => console.error('Error:', error));
 
-const dateObj = new Date(); // new Date() 创建一个新的 Date 对象时，它会自动根据当前系统的日期和时间信息，初始化一个包含各种日期和时间属性的对象。
-const dateStr = dateObj.toLocaleDateString(); // 获取当前日期字符串
-const timeStr = dateObj.toLocaleTimeString(); // 获取当前时间字符串
+
+
+
+        // 点击除悬浮窗口以外的地方隐藏悬浮窗口
+        // document.addEventListener('click', function(event) {
+        //     const isClickInsidePopup = popup.contains(event.target);
+        //     const isClickOnIcon = ellipsisIcon.contains(event.target);
+
+        //     if (!isClickInsidePopup && !isClickOnIcon) {
+        //         popup.style.display = 'none';
+        //     }
+        // });
+
+        // 当鼠标进入悬浮窗时阻止其隐藏，并取消延时隐藏操作
+        popup.addEventListener('mouseenter', function(event) {
+            clearTimeout(hidePopupTimeout); // 取消延时隐藏悬浮窗的操作
+            popup.style.display = 'block';
+        });
+
+        // 当鼠标离开悬浮窗时隐藏悬浮窗
+        popup.addEventListener('mouseleave', function(event) {
+            popup.style.display = 'none';
+        });
+
+        // 当鼠标离开三个点图标时隐藏悬浮窗
+        ellipsisIcon.addEventListener('mouseleave', function(event) {
+            // 延时隐藏悬浮窗，给用户时间从图标移到悬浮窗上
+            hidePopupTimeout = setTimeout(() => {
+                if (!popup.contains(document.activeElement)) { // 检查悬浮窗内部是否有获得焦点的元素
+                    popup.style.display = 'none';
+                }
+            }, 10); // 延时300毫秒，可根据需要调整
+        });
+
+    });
+})
+.catch(error => console.error('Error:', error));
+
+// 监听窗口大小变化事件，更新悬浮窗口位置
+window.addEventListener('resize', function () {
+    // 仅当悬浮窗处于显示状态时才更新其位置
+    document.querySelectorAll('.popup').forEach(popup => {
+        popup.style.display = 'none'; // 隐藏所有悬浮窗
+
+
+        // if (popup.style.display === 'block') {
+        //     // 重新计算触发悬浮窗的三个点图标的位置
+        //     const ellipsisIcon = popup.parentElement; // 假设悬浮窗总是三个点图标的子元素
+        //     const rect = ellipsisIcon.getBoundingClientRect();
+            
+        //     // 更新悬浮窗的位置，使其紧贴三个点图标
+        //     popup.style.left = `${rect.left}px`;
+        //     popup.style.top = `${rect.bottom}px`;
+        // }
+    });
+});
+
+// 获取当前日期和时间
+const dateObj = new Date();
+const dateStr = dateObj.toLocaleDateString();
+const timeStr = dateObj.toLocaleTimeString();
 
 // 提交日记表单
-const form = document.getElementById('diary-form'); // document.getElementById()  方法获取了 ID 为 diary-form 的表单元素节点：
+const form = document.getElementById('diary-form');
 const contentInput = document.getElementById('diary-content');
-form.addEventListener('submit', event => { //使用 .addEventListener() 方法，在该表单元素上注册一个 submit 事件监听器。这个监听器会在表单提交时被触发，并执行指定的回调函数。
-    event.preventDefault(); //不刷新
+form.addEventListener('submit', event => {
+    event.preventDefault();
 
-    const content_old = contentInput.value; //获取文本框中的值。
-    const content = `## ${dateStr} ${timeStr}:\n` + content_old; //日期+时间 换行 +输入内容。
-    //清空表单
-    contentInput.value = ''; // 清空文本框内容
-
-
-    //console.log(content)
-    //console.log(JSON.stringify({content}));
+    const content_old = contentInput.value;
+    const content = `## ${dateStr} ${timeStr}:\n` + content_old;
+    contentInput.value = '';
 
     // 发送日记内容到后台
     fetch('/submit_diary', {
@@ -149,55 +197,50 @@ form.addEventListener('submit', event => { //使用 .addEventListener() 方法�
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({content:content}) // 请求体 将一个对象 {content: content} 转换为 JSON 格式的字符串。
+        body: JSON.stringify({content:content})
     })
     .then(response => response.json())
     .then(result => {
         if (result.refresh) {
-            // 刷新页面
             location.reload();
         }
     })
     .catch(error => console.error('Error:', error));
-    });
+});
 
-//注销功能
+// 注销功能
 document.getElementById("clearCookieBtn").addEventListener("click", function() {
-    // 显示确认弹窗
     if (confirm("是否注销")) {
         // 发送POST请求到后端接口清除Cookie
         fetch('/clear_cookie', {
-        method: 'POST',
-        credentials: 'same-origin',  // 发送跨域请求时携带cookie
+            method: 'POST',
+            credentials: 'same-origin',
         })
         .then(response => {
-        if (response.ok) {
-            console.log("Cookie cleared successfully");// 输出清除成功的消息到控制台
-            window.location.reload(); 
-        } else {
-            console.error("Failed to clear cookie");// 输出清除失败的消息到控制台
-        }
+            if (response.ok) {
+                console.log("Cookie cleared successfully");// 输出清除成功的消息到控制台
+                window.location.reload(); 
+            } else {
+                console.error("Failed to clear cookie");// 输出清除失败的消息到控制台
+            }
         })
         .catch(error => {
-        console.error("Error while clearing cookie:", error);// 输出错误信息到控制台
+            console.error("Error while clearing cookie:", error);// 输出错误信息到控制台
         });
     } else {
         console.log("取消注销");
     }
-    });
+});
 
-        // 获取 diary-content 文本框元素
-    const diaryContent = document.getElementById('diary-content');
-
-    // 监听页面关闭事件
-    window.addEventListener('beforeunload', function (e) {
-        // 检查文本框中是否有内容
-        if (diaryContent.value.trim() !== '') {
-            // 弹出确认提示框
-            e.preventDefault();
-            e.returnValue = ''; // 兼容旧版浏览器
-            return '您的日记内容尚未保存，确定要离开吗？'; // 兼容现代浏览器
-        }
-    });
+// 监听页面关闭事件，提示用户保存日记内容
+const diaryContent = document.getElementById('diary-content');
+window.addEventListener('beforeunload', function (e) {
+    if (diaryContent.value.trim() !== '') {
+        e.preventDefault();
+        e.returnValue = '';
+        return '您的日记内容尚未保存，确定要离开吗？';
+    }
+});
 
 });
+
