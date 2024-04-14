@@ -89,91 +89,56 @@ fetch('/get_diaries', {
         popup.appendChild(delButton);
 
         // 将悬浮窗口添加到三个点图标中
-        ellipsisIcon.appendChild(popup);
+        pre.appendChild(popup);
+
         // 将三个点图标添加到日记元素中
         pre.appendChild(ellipsisIcon);
+
         // 将日记元素添加到日记列表中
         diaryList.appendChild(pre);
 
-        // // 点击三个点图标显示或隐藏悬浮窗
-        // ellipsisIcon.addEventListener('click', function(event) {
-        //     event.stopPropagation();
-        //     const rect = ellipsisIcon.getBoundingClientRect(); // 获取三个点图标的位置和尺寸
-        //     popup.style.display = (popup.style.display === 'block') ? 'none' : 'block'; // 切换悬浮窗口的显示状态
-        //     if (popup.style.display === 'block') {
-        //         const popupWidth = popup.offsetWidth; // 获取悬浮窗口的宽度
-        //         popup.style.left = `${rect.left - popupWidth}px`; // 设置悬浮窗口的left值为三个点图标的左边缘位置减去悬浮窗口的宽度
-        //         popup.style.top = `${rect.top}px`; // 设置悬浮窗口的top值为三个点图标的顶部位置，使其在垂直方向上大致对齐
-        //         document.body.appendChild(popup); // 确保每次显示时都重新计算位置并移动到 body 下
-        //     }
+        // // 当鼠标悬停在三个点图标上时显示悬浮窗
+        // ellipsisIcon.addEventListener('mouseenter', function(event) {
+        //     const rect = ellipsisIcon.getBoundingClientRect();
+        //     popup.style.display = 'block'; // 直接显示悬浮窗，不再需要切换显示状态
+        //     const popupWidth = popup.offsetWidth;
+        //     popup.style.left = `${rect.left - popupWidth}px`; // 设置悬浮窗的位置
+        //     popup.style.top = `${rect.top}px`;
+        //     document.body.appendChild(popup);
         // });
+
 
         // 当鼠标悬停在三个点图标上时显示悬浮窗
         ellipsisIcon.addEventListener('mouseenter', function(event) {
-            const rect = ellipsisIcon.getBoundingClientRect();
-            popup.style.display = 'block'; // 直接显示悬浮窗，不再需要切换显示状态
-            const popupWidth = popup.offsetWidth;
-            popup.style.left = `${rect.left - popupWidth}px`; // 设置悬浮窗的位置
-            popup.style.top = `${rect.top}px`;
-            document.body.appendChild(popup);
+            popup.style.display = 'block'; // 显示悬浮窗
         });
 
-
-
-
-        // 点击除悬浮窗口以外的地方隐藏悬浮窗口
-        // document.addEventListener('click', function(event) {
-        //     const isClickInsidePopup = popup.contains(event.target);
-        //     const isClickOnIcon = ellipsisIcon.contains(event.target);
-
-        //     if (!isClickInsidePopup && !isClickOnIcon) {
-        //         popup.style.display = 'none';
-        //     }
-        // });
-
-        // 当鼠标进入悬浮窗时阻止其隐藏，并取消延时隐藏操作
-        popup.addEventListener('mouseenter', function(event) {
-            clearTimeout(hidePopupTimeout); // 取消延时隐藏悬浮窗的操作
-            popup.style.display = 'block';
-        });
-
-        // 当鼠标离开悬浮窗时隐藏悬浮窗
-        popup.addEventListener('mouseleave', function(event) {
-            popup.style.display = 'none';
-        });
-
-        // 当鼠标离开三个点图标时隐藏悬浮窗
+        // 当鼠标移开三个点图标时隐藏悬浮窗
         ellipsisIcon.addEventListener('mouseleave', function(event) {
             // 延时隐藏悬浮窗，给用户时间从图标移到悬浮窗上
             hidePopupTimeout = setTimeout(() => {
                 if (!popup.contains(document.activeElement)) { // 检查悬浮窗内部是否有获得焦点的元素
                     popup.style.display = 'none';
                 }
-            }, 10); // 延时300毫秒，可根据需要调整
+            }, 300); // 延时300毫秒，可根据需要调整
         });
+
+        // 当鼠标进入悬浮窗时取消隐藏悬浮窗的延时
+        popup.addEventListener('mouseenter', function(event) {
+            clearTimeout(hidePopupTimeout);
+        });
+
+        // 当鼠标离开悬浮窗时重新设置隐藏悬浮窗的延时
+        popup.addEventListener('mouseleave', function(event) {
+            hidePopupTimeout = setTimeout(() => {
+                popup.style.display = 'none';
+            }, 300); // 延时300毫秒，可根据需要调整
+        });
+
 
     });
 })
 .catch(error => console.error('Error:', error));
-
-// 监听窗口大小变化事件，更新悬浮窗口位置
-window.addEventListener('resize', function () {
-    // 仅当悬浮窗处于显示状态时才更新其位置
-    document.querySelectorAll('.popup').forEach(popup => {
-        popup.style.display = 'none'; // 隐藏所有悬浮窗
-
-
-        // if (popup.style.display === 'block') {
-        //     // 重新计算触发悬浮窗的三个点图标的位置
-        //     const ellipsisIcon = popup.parentElement; // 假设悬浮窗总是三个点图标的子元素
-        //     const rect = ellipsisIcon.getBoundingClientRect();
-            
-        //     // 更新悬浮窗的位置，使其紧贴三个点图标
-        //     popup.style.left = `${rect.left}px`;
-        //     popup.style.top = `${rect.bottom}px`;
-        // }
-    });
-});
 
 // 获取当前日期和时间
 const dateObj = new Date();

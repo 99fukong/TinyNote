@@ -24,6 +24,7 @@
             max-width: 100ch;
             margin-left: auto;
             margin-right: auto;
+            
         }
 
         /* 按钮 */
@@ -94,19 +95,25 @@
             text-decoration: none; /* 添加下划线效果 */
         }
 
+
+
+
         /* 悬浮窗口样式 */
         .popup {
             border-radius: 5px;
             z-index: 1000; /* 确保它在顶层 */
             display: none; /* 默认不显示 */
+            /*display: block; /* 将元素显示为块级元素 */
             background-color: #27272A;
             border: 1px solid #27272A;
             box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
             padding: 0px 0px;
             width: 100px;
             height: 110px;
-            position: absolute;
-
+            position: absolute; /*绝对定位*/
+            left: calc(100% - 110px); /* 页面宽度减去悬浮窗宽度 */
+            top: 0; /* 设置悬浮窗的上偏移量 */
+            left: 830px;
             
         }
 
@@ -127,18 +134,15 @@
         }
 
 
-        /* 按钮容器样式 */
-        /*.button-container {
-            display: flex;
-        }*/
+
 
         /* 三个点图标样式 */
         .ellipsis-icon {
-            position: absolute;
+            position: absolute; /*绝对定位*/
             right: 5px;
             top: 5px;
             cursor: pointer;
-            padding: 0 8px; /* 如果需要添加内边距的话 */
+            padding: 0 0px; /* 如果需要添加内边距的话 */
             border: 1px transparent solid; /* 如果需要添加边框的话 */
         }
 
@@ -168,7 +172,6 @@
         <div id="diary-list">
 
         </div>
-    </div>
 
     <!-- 引入样式表 -->
     <script src="static/index.js"></script>
