@@ -35,6 +35,8 @@ fetch('/get_diaries', {
         const content = diary.content;
         const pre = document.createElement('pre');
         pre.textContent = content;
+        //用超链接替换 ​​URL
+        replaceURLsWithLinks(pre);
 
         // 创建三个点图标
         const ellipsisIcon = document.createElement('span');
