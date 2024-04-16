@@ -38,8 +38,8 @@ services:
     command: ['--default-authentication-plugin=mysql_native_password']
     # container_name: mysql_db
     # restart: always
-    #ports:
-    #  - "3306:3306"
+    ports:
+     - "3306:3306"
     volumes:
       - ./mysql/data:/var/lib/mysql
       - ./mysql/config:/etc/mysql/conf.d
