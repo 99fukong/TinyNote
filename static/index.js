@@ -57,6 +57,16 @@ fetch('/get_diaries', {
         };
         popup.appendChild(editButton);
 
+                // 创建编辑按钮
+                const pullButton = document.createElement('button');
+                pullButton.textContent = '拉取';
+                pullButton.onclick = () => {
+                    // 点击编辑按钮跳转到编辑页面
+                    window.location.href = ``;
+                    popup.style.display = 'none'; // 添加这行代码来隐藏悬浮窗
+                };
+                popup.appendChild(pullButton);
+
         // 创建复制按钮
         const copyButton = document.createElement('button');
         copyButton.textContent = '复制';
