@@ -93,8 +93,8 @@ a:hover {
 .popup {
   border-radius: 5px;
   z-index: 1000; /* 确保它在顶层 */
-  /*display: none; /* 默认不显示 */
-  display: block; /* 将元素显示为块级元素 */
+  display: none; /* 默认不显示 */
+  /*display: block; /* 将元素显示为块级元素 */
   background-color: #27272A;
   border: 1px solid #27272A;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);

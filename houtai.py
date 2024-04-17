@@ -1,21 +1,22 @@
+import io
 import os
+import re
 import pymysql
 import csv
-import re
-import conf as CONF
 import logging
 import time
-import io
-from webdav4.client import Client
-from flask import Flask, request, jsonify, render_template, send_from_directory, url_for, redirect, session, make_response
-from dotenv import load_dotenv
 import jwt
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
+from webdav4.client import Client
+from flask import Flask, request, jsonify, render_template, send_from_directory, url_for, redirect, session, make_response
+import conf as CONF
 
+# 初始化 Flask 应用
 app = Flask(__name__, template_folder="templates", static_folder="static")
-
 # 设置密钥，用于签名和验证 JWT
 app.secret_key = "your_secret_key"
+
 
 # 加载 .env 文件中的环境变量
 load_dotenv()
@@ -37,8 +38,18 @@ if not AUTH_PASSWORD:
 if not BIJIBEN:
     raise TypeError("变量 BIJIBEN  不能为 空或None")
 
-client = Client(base_url=BASE_URL,
-                auth=(AUTH_USER, AUTH_PASSWORD))
+# 初始化 webdav4 客户端
+client = Client(base_url=BASE_URL,auth=(AUTH_USER, AUTH_PASSWORD))
+
+# 初始化数据库连接配置
+db_config = {
+    "host": "mysql",   # 使用 MySQL 容器的 IP 地址或主机名
+    "user": "test",
+    "password": "123456",
+    "database": "diary_db",
+    "charset": 'utf8mb4',
+    "port": 3306,
+}
 
 # MySQL 连接配置
 max_attempts = 54
@@ -121,7 +132,7 @@ def create_diary_table():
                         id INT NOT NULL AUTO_INCREMENT,
                         user_id INT NOT NULL,
                         tag TEXT ,
-                        content TEXT,
+                        content LONGTEXT,
                         created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
                         PRIMARY KEY (id),
                         FOREIGN KEY (user_id) REFERENCES user(id)
@@ -143,6 +154,63 @@ def create_paste_table():
                         FOREIGN KEY (user_id) REFERENCES user(id)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4""")
     connection.commit()
+
+
+def download_file_from_jianguoyun(local_path):
+    """
+    从坚果云下载文件到本地。
+    """
+    try:
+        # 从坚果云获取文件内容
+        with client.open(path=BIJIBEN, mode='r', encoding='utf-8') as file:
+            jianguoyun_content = file.read()
+        
+        # 将文件内容写入本地文件
+        with open(local_path, 'w', encoding='utf-8') as local_file:
+            local_file.write(jianguoyun_content)
+        
+        print("文件已成功下载到本地：", local_path)
+    
+    except Exception as e:
+        print("下载文件时出现错误：", str(e))
+        
+        
+def add_diary_to_db(tag, content, created_at, user_id=1):
+    """
+    将日记数据添加到数据库。
+    """
+    connection = get_db_connection()  # 使用前面定义的 get_db_connection 方法获取数据库连接
+    try:
+        with connection.cursor() as cursor:
+            sql = "INSERT INTO diary (tag, content, created_at, user_id) VALUES (%s, %s, %s, %s)"
+            cursor.execute(sql, (tag, content, created_at, user_id))
+            connection.commit()
+    except pymysql.MySQLError as e:
+        print(f"Error {e.args[0]}, {e.args[1]}")
+    finally:
+        if connection:
+            connection.close()
+
+def process_md(file_path):
+    """
+    读取.md文件并处理每个分割的内容。
+    """
+    with open(file_path, 'r', encoding='utf-8') as md_file:
+        md_content = md_file.read()
+
+        # 使用正则表达式匹配分割规则
+        split_pattern = r'(## \d{4}/\d{1,2}/\d{1,2} \d{1,2}:\d{1,2}:\d{1,2}:)'
+        splits = re.split(split_pattern, md_content)
+
+        splits = splits[1:]  # 去除第一个空字符串（因为第一个分割规则之前没有内容）
+
+        for i in range(len(splits) - 1, -1, -2):
+            created_at_str = splits[i - 1].strip()  # 提取创建时间字符串
+            created_at = datetime.strptime(created_at_str, '## %Y/%m/%d %H:%M:%S:')  # 将字符串转换为日期时间对象
+
+            content = splits[i - 1] + '\n' + splits[i].strip()
+
+            add_diary_to_db("", content, created_at)  # 将内容添加到数据库
 
 
 # 注册用户
@@ -378,6 +446,23 @@ def submit_diary():
 #         return jsonify({'status': 'error', 'message': 'User not authenticated'})
 #     add_paste(user_id, content)  # 使用新的添加粘贴板条目的函数
 #     return jsonify({'status': 'success', 'refresh': True})
+
+#拉取坚果云文件并处理
+@app.route('/pull_from_jianguoyun', methods=['GET'])
+def pull_from_jianguoyun():
+    try:
+        # 要保存文件的本地路径
+        local_path = "diary.md"  # 假设你想将文件保存为diary.md
+
+        # 调用下载函数
+        download_file_from_jianguoyun(local_path)
+
+        # 调用处理 MD 文件函数
+        process_md(local_path)
+
+        return jsonify({"status": "success", "message": "文件已成功从坚果云拉取并处理。"})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)})
 
 
 

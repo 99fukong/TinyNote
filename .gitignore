@@ -5,3 +5,4 @@ diary.txt*
 .env
 *csv
 mysql/*
+diary.md

@@ -46,6 +46,24 @@ fetch('/get_diaries', {
         // 创建悬浮窗口
         const popup = document.createElement('div');
         popup.classList.add('popup');
+        
+        // 创建拉取按钮
+        const pullButton = document.createElement('button');
+        pullButton.textContent = '拉取';
+        pullButton.onclick = () => {
+            // 点击拉取按钮将坚果云的md文档拉取到数据库
+            fetch('/pull_from_jianguoyun')
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message); // 使用弹窗显示服务器响应的消息
+                    popup.style.display = 'none'; // 隐藏悬浮窗
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('拉取过程中出现错误');
+                });
+        };
+        popup.appendChild(pullButton);
 
         // 创建编辑按钮
         const editButton = document.createElement('button');
@@ -57,15 +75,6 @@ fetch('/get_diaries', {
         };
         popup.appendChild(editButton);
 
-                // 创建编辑按钮
-                const pullButton = document.createElement('button');
-                pullButton.textContent = '拉取';
-                pullButton.onclick = () => {
-                    // 点击编辑按钮跳转到编辑页面
-                    window.location.href = ``;
-                    popup.style.display = 'none'; // 添加这行代码来隐藏悬浮窗
-                };
-                popup.appendChild(pullButton);
 
         // 创建复制按钮
         const copyButton = document.createElement('button');
