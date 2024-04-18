@@ -1,4 +1,26 @@
+// 定义拉取函数
+function pullFromJianguoyun() {
+    // 发送拉取请求
+    fetch('/pull_from_jianguoyun')
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message); // 显示服务器响应的消息
+            location.reload(); // 刷新当前页面
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('拉取过程中出现错误');
+        });
+}
+
 document.addEventListener('DOMContentLoaded', function () {
+    // 添加事件委托，处理按钮点击事件
+    document.addEventListener('click', function (event) {
+        // 如果点击的是类名为 pull-button 的按钮，则调用拉取函数
+        if (event.target.classList.contains('pull-button')) {
+            pullFromJianguoyun();
+        }
+    });
 // 从本地存储获取令牌
 const token = localStorage.getItem('jwtToken');
 
@@ -56,7 +78,8 @@ fetch('/get_diaries', {
                 .then(response => response.json())
                 .then(data => {
                     alert(data.message); // 使用弹窗显示服务器响应的消息
-                    popup.style.display = 'none'; // 隐藏悬浮窗
+                    location.reload(); // 刷新当前页面
+                    //popup.style.display = 'none'; // 隐藏悬浮窗
                 })
                 .catch(error => {
                     console.error('Error:', error);

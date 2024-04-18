@@ -175,26 +175,12 @@ def download_file_from_jianguoyun(local_path):
         print("下载文件时出现错误：", str(e))
         
         
-def add_diary_to_db(tag, content, created_at, user_id=1):
-    """
-    将日记数据添加到数据库。
-    """
-    connection = get_db_connection()  # 使用前面定义的 get_db_connection 方法获取数据库连接
-    try:
-        with connection.cursor() as cursor:
-            sql = "INSERT INTO diary (tag, content, created_at, user_id) VALUES (%s, %s, %s, %s)"
-            cursor.execute(sql, (tag, content, created_at, user_id))
-            connection.commit()
-    except pymysql.MySQLError as e:
-        print(f"Error {e.args[0]}, {e.args[1]}")
-    finally:
-        if connection:
-            connection.close()
-
 def process_md(file_path):
     """
     读取.md文件并处理每个分割的内容。
     """
+    clear_diary_table()  # 清空数据库中的日记记录
+
     with open(file_path, 'r', encoding='utf-8') as md_file:
         md_content = md_file.read()
 
@@ -211,6 +197,40 @@ def process_md(file_path):
             content = splits[i - 1] + '\n' + splits[i].strip()
 
             add_diary_to_db("", content, created_at)  # 将内容添加到数据库
+
+
+def clear_diary_table():
+    """
+    清空 diary 表中的所有记录。
+    """
+    connection = get_db_connection()  # 使用前面定义的 get_db_connection 方法获取数据库连接
+    try:
+        with connection.cursor() as cursor:
+            sql = "DELETE FROM diary"
+            cursor.execute(sql)
+            connection.commit()
+    except pymysql.MySQLError as e:
+        print(f"Error {e.args[0]}, {e.args[1]}")
+    finally:
+        if connection:
+            connection.close()
+
+
+def add_diary_to_db(tag, content, created_at, user_id=1):
+    """
+    将日记数据添加到数据库。
+    """
+    connection = get_db_connection()  # 使用前面定义的 get_db_connection 方法获取数据库连接
+    try:
+        with connection.cursor() as cursor:
+            sql = "INSERT INTO diary (tag, content, created_at, user_id) VALUES (%s, %s, %s, %s)"
+            cursor.execute(sql, (tag, content, created_at, user_id))
+            connection.commit()
+    except pymysql.MySQLError as e:
+        print(f"Error {e.args[0]}, {e.args[1]}")
+    finally:
+        if connection:
+            connection.close()
 
 
 # 注册用户
