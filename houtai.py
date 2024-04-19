@@ -103,17 +103,11 @@ def get_db_connection():
     return connection
 
 
-# 创建数据库
-def create_database():
-    connection = get_db_connection()  # 获取有效的数据库连接
+# 创建数据库和表格
+def create_database_tables():
+    connection = get_db_connection()
     with connection.cursor() as cursor:
         cursor.execute("CREATE DATABASE IF NOT EXISTS diary_db")
-    connection.commit()
-
-# 创建用户表
-def create_user_table():
-    connection = get_db_connection()  # 获取有效的数据库连接
-    with connection.cursor() as cursor:
         cursor.execute("""CREATE TABLE IF NOT EXISTS diary_db.user (
                           id INT NOT NULL AUTO_INCREMENT,
                           username VARCHAR(255) NOT NULL,
@@ -122,12 +116,6 @@ def create_user_table():
                           PRIMARY KEY (id),
                           UNIQUE KEY (username)
                       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4""")
-    connection.commit()
-
-# 创建日记表
-def create_diary_table():
-    connection = get_db_connection()  # 获取有效的数据库连接
-    with connection.cursor() as cursor:
         cursor.execute("""CREATE TABLE IF NOT EXISTS diary_db.diary (
                         id INT NOT NULL AUTO_INCREMENT,
                         user_id INT NOT NULL,
@@ -137,7 +125,15 @@ def create_diary_table():
                         PRIMARY KEY (id),
                         FOREIGN KEY (user_id) REFERENCES user(id)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4""")
-
+        cursor.execute("""CREATE TABLE IF NOT EXISTS diary_db.paste (
+                        id INT NOT NULL AUTO_INCREMENT,
+                        user_id INT NOT NULL,
+                        tag TEXT,
+                        content TEXT,
+                        created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+                        PRIMARY KEY (id),
+                        FOREIGN KEY (user_id) REFERENCES user(id)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4""")
     connection.commit()
     
     # 创建粘贴板表
@@ -156,47 +152,36 @@ def create_paste_table():
     connection.commit()
 
 
-def download_file_from_jianguoyun(local_path):
-    """
-    从坚果云下载文件到本地。
-    """
+# 从坚果云下载文件内容到内存中
+def download_file_from_jianguoyun():
     try:
         # 从坚果云获取文件内容
         with client.open(path=BIJIBEN, mode='r', encoding='utf-8') as file:
             jianguoyun_content = file.read()
-        
-        # 将文件内容写入本地文件
-        with open(local_path, 'w', encoding='utf-8') as local_file:
-            local_file.write(jianguoyun_content)
-        
-        print("文件已成功下载到本地：", local_path)
-    
+        return jianguoyun_content
     except Exception as e:
-        print("下载文件时出现错误：", str(e))
+        logging.error("下载文件时出现错误：", str(e))
+        return None
         
         
-def process_md(file_path):
-    """
-    读取.md文件并处理每个分割的内容。
-    """
-    clear_diary_table()  # 清空数据库中的日记记录
+# 处理 Markdown 文件
+def process_md(content):
+    # 清空数据库中的日记记录
+    clear_diary_table()
 
-    with open(file_path, 'r', encoding='utf-8') as md_file:
-        md_content = md_file.read()
+    # 使用正则表达式匹配分割规则
+    split_pattern = r'(## \d{4}/\d{1,2}/\d{1,2} \d{1,2}:\d{1,2}:\d{1,2}:)'
+    splits = re.split(split_pattern, content)
 
-        # 使用正则表达式匹配分割规则
-        split_pattern = r'(## \d{4}/\d{1,2}/\d{1,2} \d{1,2}:\d{1,2}:\d{1,2}:)'
-        splits = re.split(split_pattern, md_content)
+    splits = splits[1:]  # 去除第一个空字符串（因为第一个分割规则之前没有内容）
 
-        splits = splits[1:]  # 去除第一个空字符串（因为第一个分割规则之前没有内容）
+    for i in range(len(splits) - 1, -1, -2):
+        created_at_str = splits[i - 1].strip()  # 提取创建时间字符串
+        created_at = datetime.strptime(created_at_str, '## %Y/%m/%d %H:%M:%S:')  # 将字符串转换为日期时间对象
 
-        for i in range(len(splits) - 1, -1, -2):
-            created_at_str = splits[i - 1].strip()  # 提取创建时间字符串
-            created_at = datetime.strptime(created_at_str, '## %Y/%m/%d %H:%M:%S:')  # 将字符串转换为日期时间对象
+        content = splits[i - 1] + '\n' + splits[i].strip()
 
-            content = splits[i - 1] + '\n' + splits[i].strip()
-
-            add_diary_to_db("", content, created_at)  # 将内容添加到数据库
+        add_diary_to_db("", content, created_at)  # 将内容添加到数据库
 
 
 def clear_diary_table():
@@ -216,11 +201,9 @@ def clear_diary_table():
             connection.close()
 
 
+# 添加日记到数据库
 def add_diary_to_db(tag, content, created_at, user_id=1):
-    """
-    将日记数据添加到数据库。
-    """
-    connection = get_db_connection()  # 使用前面定义的 get_db_connection 方法获取数据库连接
+    connection = get_db_connection()
     try:
         with connection.cursor() as cursor:
             sql = "INSERT INTO diary (tag, content, created_at, user_id) VALUES (%s, %s, %s, %s)"
@@ -231,6 +214,9 @@ def add_diary_to_db(tag, content, created_at, user_id=1):
     finally:
         if connection:
             connection.close()
+
+
+
 
 
 # 注册用户
@@ -260,21 +246,6 @@ def edit_diary(diary_id, tag, content):
             logging.error(f"Error editing diary: {e}")
     sync_diaries_to_jianguoyun()
     
-# # 编辑ztb日记    
-# def edit_paste(paste_id, content):
-#     with connection.cursor() as cursor:
-#         sql = "UPDATE paste SET content=%s WHERE id=%s"
-#         cursor.execute(sql, (content, paste_id))
-#         connection.commit()
-    
-    
-# # ztb
-# def get_pastes():
-#     with connection.cursor() as cursor:
-#         sql = "SELECT * FROM paste"
-#         cursor.execute(sql)
-#         return cursor.fetchall()
-
 
 # 删除日记
 def delete_diary(diary_id):
@@ -285,13 +256,6 @@ def delete_diary(diary_id):
         connection.commit()
     sync_diaries_to_jianguoyun()
     
-# # 删除粘贴板条目
-# def delete_paste(paste_id):
-#     with connection.cursor() as cursor:
-#         sql = "DELETE FROM paste WHERE id=%s"
-#         cursor.execute(sql, (paste_id,))
-#         connection.commit()
-
 
 # 添加日记
 def add_diary(tag, content, user_id):
@@ -301,13 +265,6 @@ def add_diary(tag, content, user_id):
         cursor.execute(sql, (tag, content, user_id))
         connection.commit()
         
-# # 添加粘贴板条目
-# def add_paste(user_id, content):
-#     with connection.cursor() as cursor:
-#         sql = "INSERT INTO paste (user_id, content) VALUES (%s, %s)"
-#         cursor.execute(sql, (user_id, content))
-#         connection.commit()
-
 
 # 获取当前登录用户的所有日记，按创建时间降序排序
 def get_user_diaries(user_id):
@@ -397,12 +354,6 @@ def get_diaries():
     diaries = get_user_diaries(user_id)
     return jsonify(diaries)
 
-# #ztb
-# @app.route('/get_pastes')
-# @login_required
-# def get_pastes_route():
-#     pastes = get_pastes()
-#     return jsonify(pastes)
 
 
 @app.route('/tp.html')
@@ -454,31 +405,18 @@ def submit_diary():
     # 返回 JSON 响应，指示客户端刷新页面
     return jsonify({'status': 'success', 'refresh': True})
 
-# # 添加ztb笔记
-# @app.route('/submit_paste', methods=['POST'])
-# @login_required
-# def submit_paste():
-#     data = request.json
-#     content = data['content']
-#     token = session.get('token')
-#     user_id = verify_token(token)
-#     if user_id is None:
-#         return jsonify({'status': 'error', 'message': 'User not authenticated'})
-#     add_paste(user_id, content)  # 使用新的添加粘贴板条目的函数
-#     return jsonify({'status': 'success', 'refresh': True})
-
 #拉取坚果云文件并处理
 @app.route('/pull_from_jianguoyun', methods=['GET'])
-def pull_from_jianguoyun():
+def ull_from_jianpguoyun():
     try:
         # 要保存文件的本地路径
-        local_path = "diary.md"  # 假设你想将文件保存为diary.md
+        # local_path = "diary.md"  # 假设你想将文件保存为diary.md
 
         # 调用下载函数
-        download_file_from_jianguoyun(local_path)
+        jianguoyun_content = download_file_from_jianguoyun()
 
         # 调用处理 MD 文件函数
-        process_md(local_path)
+        process_md(jianguoyun_content)
 
         return jsonify({"status": "success", "message": "文件已成功从坚果云拉取并处理。"})
     except Exception as e:
@@ -503,14 +441,6 @@ def edit(diary_id):
         edit_diary(diary_id, tag, content)
         return redirect(url_for('index'))
     
-# #编辑ztb
-# @app.route('/edit_paste/<int:paste_id>', methods=['POST'])
-# @login_required
-# def edit_paste_route(paste_id):
-#     data = request.json
-#     content = data['content']
-#     edit_paste(paste_id, content)
-#     return jsonify({'status': 'success', 'message': 'Paste updated successfully'})
 
 
 #用户登录
@@ -583,15 +513,6 @@ def delete(diary_id):
     delete_diary(diary_id)
     return redirect(url_for('index'))
 
-# #删除ztb
-# @app.route('/delete_paste/<int:paste_id>', methods=['POST'])
-# @login_required
-# def delete_paste_route(paste_id):
-#     delete_paste(paste_id)
-#     return jsonify({'status': 'success', 'message': 'Paste deleted successfully'})
-
-
-
 
 #----------------------------csv-ztb-------------------------------------------------
 @app.route('/submit_ztb', methods=['POST'])
@@ -640,9 +561,7 @@ def get_diaries_z():
 
 
 if __name__ == '__main__':
-    create_database()
     connection.select_db('diary_db')
-    create_user_table()
-    create_diary_table()
+    create_database_tables()
     create_paste_table()  # 创建粘贴板表
     app.run(host="0.0.0.0", debug=True, port=5050)

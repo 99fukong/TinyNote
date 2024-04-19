@@ -70,23 +70,23 @@ fetch('/get_diaries', {
         popup.classList.add('popup');
         
         // 创建拉取按钮
-        const pullButton = document.createElement('button');
-        pullButton.textContent = '拉取';
-        pullButton.onclick = () => {
-            // 点击拉取按钮将坚果云的md文档拉取到数据库
-            fetch('/pull_from_jianguoyun')
-                .then(response => response.json())
-                .then(data => {
-                    alert(data.message); // 使用弹窗显示服务器响应的消息
-                    location.reload(); // 刷新当前页面
-                    //popup.style.display = 'none'; // 隐藏悬浮窗
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('拉取过程中出现错误');
-                });
-        };
-        popup.appendChild(pullButton);
+        // const pullButton = document.createElement('button');
+        // pullButton.textContent = '拉取';
+        // pullButton.onclick = () => {
+        //     // 点击拉取按钮将坚果云的md文档拉取到数据库
+        //     fetch('/pull_from_jianguoyun')
+        //         .then(response => response.json())
+        //         .then(data => {
+        //             alert(data.message); // 使用弹窗显示服务器响应的消息
+        //             location.reload(); // 刷新当前页面
+        //             //popup.style.display = 'none'; // 隐藏悬浮窗
+        //         })
+        //         .catch(error => {
+        //             console.error('Error:', error);
+        //             alert('拉取过程中出现错误');
+        //         });
+        // };
+        // popup.appendChild(pullButton);
 
         // 创建编辑按钮
         const editButton = document.createElement('button');
@@ -140,17 +140,6 @@ fetch('/get_diaries', {
 
         // 将日记元素添加到日记列表中
         diaryList.appendChild(pre);
-
-        // // 当鼠标悬停在三个点图标上时显示悬浮窗
-        // ellipsisIcon.addEventListener('mouseenter', function(event) {
-        //     const rect = ellipsisIcon.getBoundingClientRect();
-        //     popup.style.display = 'block'; // 直接显示悬浮窗，不再需要切换显示状态
-        //     const popupWidth = popup.offsetWidth;
-        //     popup.style.left = `${rect.left - popupWidth}px`; // 设置悬浮窗的位置
-        //     popup.style.top = `${rect.top}px`;
-        //     document.body.appendChild(popup);
-        // });
-
 
         // 当鼠标悬停在三个点图标上时显示悬浮窗
         ellipsisIcon.addEventListener('mouseenter', function(event) {
