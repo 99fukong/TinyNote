@@ -59,20 +59,30 @@ button[type="submit"] {
 }
 
 /* 日记块 */
-pre {
-  position: relative; /* 添加这行 */
-  white-space: pre-wrap;
-  word-wrap: break-word;
+.pre { 
   width: 100%;
   font-size: 20px;
   border: 2px solid hsl(240, 2%, 9%); /* 设置边框样式 */
-  margin: 0 auto 10px; /* 设置外边距 */
   font-family: "Source Code Pro","Courier New","等线", Courier, monospace;
   line-height: 1.35;
   tab-size: 2;
   display: block; /* 设置为块级元素 */
   padding: 5px; /* 代码块的内边距 */
 }
+
+.pre-list {
+  position: relative; 
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  width: 100%;
+  margin: 0 auto 5px; /* 设置外边距 */
+  font-family: "Source Code Pro","Courier New","等线", Courier, monospace;
+  line-height: 1.35;
+  tab-size: 2;
+  display: block; /* 设置为块级元素 */
+  padding: 1px; /* 代码块的内边距 */
+}
+
 
 /* 设置超链接的默认样式 */
 a {
@@ -86,45 +96,41 @@ a:hover {
   text-decoration: none; /* 添加下划线效果 */
 }
 
-
+.pop{
+  position: absolute; 
+   z-index: 1000;
+  top: 0; 
+  right: 0; /* 将 left 修改为 right */
+  width: 80px;
+  
+  /* border: 1px solid white;  */
+}
 
 
 /* 悬浮窗口样式 */
 .popup {
-  border-radius: 5px;
   z-index: 1000; /* 确保它在顶层 */
   display: none; /* 默认不显示 */
-  /*display: block; /* 将元素显示为块级元素 */
-  background-color: #27272A;
-  border: 1px solid #27272A;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 0px 0px;
-  width: 100px;
-  height: 110px;
-  position: absolute; /*绝对定位*/
-  left: calc(100% - 110px); /* 页面宽度减去悬浮窗宽度 */
-  top: 0; /* 设置悬浮窗的上偏移量 */
-  left: 830px;
+  /*display: inline-block; /* 将元素显示为块级元素*/ 
+  width: 60px;
+  /* border: 1px solid white;  */
+
   
 }
 
-.popup button {
-  padding: 8px 12px; /* 调整按钮内边距 */
-  background-color: #ffffff; /* 设置按钮背景颜色 */
-  color: #333; /* 设置按钮文字颜色 */
+.popup button { 
+  padding: 4px 12px; /* 调整按钮内边距 */
+  background-color: rgb(24, 24, 24); /* 设置按钮背景颜色 */
+  color: #c9cdd1; /* 设置按钮文字颜色 */
   border: none; /* 移除按钮边框 */
-  border-radius: 5px; /* 设置按钮圆角 */
+  /* border-radius: 5px;  */
   cursor: pointer; /* 设置鼠标样式为手型 */
-  margin-bottom: 5px; /* 调整按钮之间的垂直间距 */
-  display: block; /* 设置按钮为块级元素 */
-  width: 100%; /* 设置按钮宽度为父容器宽度 */
+  /* margin-bottom: 5px;  */
 }
 
 .popup button:hover {
-  background-color: #eaeaea; /* 设置鼠标悬停时的背景颜色 */
+  background-color: #aaa095; /* 设置鼠标悬停时的背景颜色 */
 }
-
-
 
 
 /* 三个点图标样式 */
@@ -135,4 +141,7 @@ a:hover {
   cursor: pointer;
   padding: 0 0px; /* 如果需要添加内边距的话 */
   border: 5px solid transparent; /* 添加透明外边框 */
+  border-radius: 6px;
+  font-size: 28px; /* 修改为你想要的大小 */
+  
 }

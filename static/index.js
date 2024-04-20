@@ -55,8 +55,17 @@ fetch('/get_diaries', {
     // 遍历日记列表
     diaries.forEach(diary => {
         const content = diary.content;
-        const pre = document.createElement('pre');
+        // 创建 pre-list 元素
+        const preList = document.createElement('div');
+        preList.classList.add('pre-list');
+
+        // const pre = document.createElement('pre');
+        // pre.textContent = content;
+        //创建 pre 元素
+        const pre = document.createElement('div');
+        pre.classList.add('pre');
         pre.textContent = content;
+
         //用超链接替换 ​​URL
         replaceURLsWithLinks(pre);
 
@@ -65,10 +74,15 @@ fetch('/get_diaries', {
         ellipsisIcon.innerHTML = '&#8942;';
         ellipsisIcon.classList.add('ellipsis-icon');
 
-        // 创建悬浮窗口
+        //创建悬浮窗口
         const popup = document.createElement('div');
         popup.classList.add('popup');
-        
+
+        // 创建 pop 元素
+        const pop = document.createElement('div');
+        pop.classList.add('pop');
+
+
         // 创建拉取按钮
         // const pullButton = document.createElement('button');
         // pullButton.textContent = '拉取';
@@ -132,14 +146,30 @@ fetch('/get_diaries', {
         };
         popup.appendChild(delButton);
 
-        // 将悬浮窗口添加到三个点图标中
-        pre.appendChild(popup);
+        // // 将悬浮窗口添加到三个点图标中
+        // pre.appendChild(popup);
 
-        // 将三个点图标添加到日记元素中
-        pre.appendChild(ellipsisIcon);
+        // // 将三个点图标添加到日记元素中
+        // pre.appendChild(ellipsisIcon);
 
-        // 将日记元素添加到日记列表中
-        diaryList.appendChild(pre);
+        // // 将日记元素添加到日记列表中
+        // diaryList.appendChild(pre);
+
+
+        // 将 popup 添加到 pop 中
+        pop.appendChild(popup);
+        // 将 pre 和 ellipsisIcon 添加到 preList 中
+        preList.appendChild(pre);
+        
+        pop.appendChild(ellipsisIcon);
+
+        // 将 pop 添加到 preList 中
+        preList.appendChild(pop);
+
+        // 将 preList 添加到 diaryList 中
+        diaryList.appendChild(preList);
+
+
 
         // 当鼠标悬停在三个点图标上时显示悬浮窗
         ellipsisIcon.addEventListener('mouseenter', function(event) {
@@ -152,6 +182,8 @@ fetch('/get_diaries', {
             hidePopupTimeout = setTimeout(() => {
                 if (!popup.contains(document.activeElement)) { // 检查悬浮窗内部是否有获得焦点的元素
                     popup.style.display = 'none';
+                    // popup.style.display = 'block'; 
+
                 }
             }, 300); // 延时300毫秒，可根据需要调整
         });
@@ -165,6 +197,7 @@ fetch('/get_diaries', {
         popup.addEventListener('mouseleave', function(event) {
             hidePopupTimeout = setTimeout(() => {
                 popup.style.display = 'none';
+                // popup.style.display = 'block';
             }, 300); // 延时300毫秒，可根据需要调整
         });
 
@@ -241,4 +274,3 @@ window.addEventListener('beforeunload', function (e) {
 });
 
 });
-
