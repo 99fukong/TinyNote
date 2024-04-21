@@ -1,3 +1,7 @@
+html{
+  font-size: 16px;
+}
+
 * {
   box-sizing: border-box; /* 设置所有元素的盒模型为 border-box */
 }
@@ -126,6 +130,7 @@ a:hover {
   /* border-radius: 5px;  */
   cursor: pointer; /* 设置鼠标样式为手型 */
   /* margin-bottom: 5px;  */
+  font-size: 1rem;
 }
 
 .popup button:hover {
