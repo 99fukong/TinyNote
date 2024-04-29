@@ -138,7 +138,8 @@ fetch('/get_diaries', {
                 })
                 .then(() => {
                     // 从页面中删除日记
-                    diaryList.removeChild(pre);
+                    // diaryList.removeChild(pre);
+                    diaryList.removeChild(preList);
                 })
                 .catch(error => console.error('删除失败：', error));
             }
