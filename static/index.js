@@ -69,35 +69,81 @@ fetch('/get_diaries', {
         //用超链接替换 ​​URL
         replaceURLsWithLinks(pre);
 
-        //代码块背景
+        // 代码块背景
         const codeBlockStart = '```';
         const codeBlockEnd = '```';
-        
+
         let startIndex = content.indexOf(codeBlockStart);
         let updatedContent = content; // 保存更新后的内容
+
         while (startIndex !== -1) {
-            const endIndex = content.indexOf(codeBlockEnd, startIndex + codeBlockStart.length);
+            // 查找下一个结束标记
+            const endIndex = updatedContent.indexOf(codeBlockEnd, startIndex + codeBlockStart.length);
+            
             if (endIndex !== -1) {
-                const codeBlockContent = content.substring(startIndex + codeBlockStart.length, endIndex);
+                // 检查开始标记和结束标记之间是否包含其他开始标记
+                const innerStartIndex = updatedContent.indexOf(codeBlockStart, startIndex + codeBlockStart.length);
                 
+                // 如果包含其他开始标记并且在结束标记之前，则跳过当前开始标记
+                if (innerStartIndex !== -1 && innerStartIndex < endIndex) {
+                    startIndex = updatedContent.indexOf(codeBlockStart, innerStartIndex + codeBlockStart.length);
+                    continue;
+                }
+
+                // 提取代码块内容
+                const codeBlockContent = updatedContent.substring(startIndex + codeBlockStart.length, endIndex);
+
                 // 创建包含代码块的 span 元素
                 const codeBlockSpan = document.createElement('span');
                 codeBlockSpan.textContent = codeBlockContent;
                 codeBlockSpan.classList.add('code-block');
-        
+
                 // 设置代码块的背景颜色
                 codeBlockSpan.style.backgroundColor = 'your-color-here';
-        
+
                 // 替换原始代码块
                 updatedContent = updatedContent.substring(0, startIndex) + codeBlockSpan.outerHTML + updatedContent.substring(endIndex + codeBlockEnd.length);
-        
-                // 继续查找下一个代码块
+                
+                // 更新 startIndex，以便查找下一个代码块的起始位置
                 startIndex = updatedContent.indexOf(codeBlockStart, endIndex + codeBlockEnd.length);
             } else {
                 // 如果没有找到匹配的结束标记，则跳出循环
                 break;
             }
         }
+
+
+
+
+        //代码块背景
+        // const codeBlockStart = '```';
+        // const codeBlockEnd = '```';
+        
+        // let startIndex = content.indexOf(codeBlockStart);
+        // let updatedContent = content; // 保存更新后的内容
+        // while (startIndex !== -1) {
+        //     const endIndex = content.indexOf(codeBlockEnd, startIndex + codeBlockStart.length);
+        //     if (endIndex !== -1) {
+        //         const codeBlockContent = content.substring(startIndex + codeBlockStart.length, endIndex);
+                
+        //         // 创建包含代码块的 span 元素
+        //         const codeBlockSpan = document.createElement('span');
+        //         codeBlockSpan.textContent = codeBlockContent;
+        //         codeBlockSpan.classList.add('code-block');
+        
+        //         // 设置代码块的背景颜色
+        //         codeBlockSpan.style.backgroundColor = 'your-color-here';
+        
+        //         // 替换原始代码块
+        //         updatedContent = updatedContent.substring(0, startIndex) + codeBlockSpan.outerHTML + updatedContent.substring(endIndex + codeBlockEnd.length);
+        
+        //         // 继续查找下一个代码块
+        //         startIndex = updatedContent.indexOf(codeBlockStart, endIndex + codeBlockEnd.length);
+        //     } else {
+        //         // 如果没有找到匹配的结束标记，则跳出循环
+        //         break;
+        //     }
+        // }
         
         // 更新 pre 的内容
         pre.innerHTML = updatedContent;
