@@ -69,6 +69,41 @@ fetch('/get_diaries', {
         //用超链接替换 ​​URL
         replaceURLsWithLinks(pre);
 
+        //代码块背景
+        const codeBlockStart = '```';
+        const codeBlockEnd = '```';
+        
+        let startIndex = content.indexOf(codeBlockStart);
+        let updatedContent = content; // 保存更新后的内容
+        while (startIndex !== -1) {
+            const endIndex = content.indexOf(codeBlockEnd, startIndex + codeBlockStart.length);
+            if (endIndex !== -1) {
+                const codeBlockContent = content.substring(startIndex + codeBlockStart.length, endIndex);
+                
+                // 创建包含代码块的 span 元素
+                const codeBlockSpan = document.createElement('span');
+                codeBlockSpan.textContent = codeBlockContent;
+                codeBlockSpan.classList.add('code-block');
+        
+                // 设置代码块的背景颜色
+                codeBlockSpan.style.backgroundColor = 'your-color-here';
+        
+                // 替换原始代码块
+                updatedContent = updatedContent.substring(0, startIndex) + codeBlockSpan.outerHTML + updatedContent.substring(endIndex + codeBlockEnd.length);
+        
+                // 继续查找下一个代码块
+                startIndex = updatedContent.indexOf(codeBlockStart, endIndex + codeBlockEnd.length);
+            } else {
+                // 如果没有找到匹配的结束标记，则跳出循环
+                break;
+            }
+        }
+        
+        // 更新 pre 的内容
+        pre.innerHTML = updatedContent;
+               
+
+
         // 创建三个点图标
         const ellipsisIcon = document.createElement('span');
         ellipsisIcon.innerHTML = '&#8942;';
@@ -147,14 +182,6 @@ fetch('/get_diaries', {
         };
         popup.appendChild(delButton);
 
-        // // 将悬浮窗口添加到三个点图标中
-        // pre.appendChild(popup);
-
-        // // 将三个点图标添加到日记元素中
-        // pre.appendChild(ellipsisIcon);
-
-        // // 将日记元素添加到日记列表中
-        // diaryList.appendChild(pre);
 
 
         // 将 popup 添加到 pop 中
@@ -206,6 +233,8 @@ fetch('/get_diaries', {
     });
 })
 .catch(error => console.error('Error:', error));
+
+
 
 // 获取当前日期和时间
 const dateObj = new Date();

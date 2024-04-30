@@ -110,6 +110,14 @@ a:hover {
   /* border: 1px solid white;  */
 }
 
+.code-block {
+  background-color: #252424; /* 设置代码块的背景颜色 */
+  display: block; /* 使代码块单独占据一行 */
+  padding: 5px; /* 可选：为代码块添加一些内边距 */
+  margin: 5px 0; /* 可选：为代码块添加一些外边距 */
+}
+
+
 
 /* 悬浮窗口样式 */
 .popup {
