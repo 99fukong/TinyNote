@@ -69,6 +69,50 @@ fetch('/get_diaries', {
         //用超链接替换 ​​URL
         replaceURLsWithLinks(pre);
 
+        // // 代码块背景
+        // const codeBlockStart = '```';
+        // const codeBlockEnd = '```';
+
+        // let startIndex = content.indexOf(codeBlockStart);
+        // let updatedContent = content; // 保存更新后的内容
+
+        // while (startIndex !== -1) {
+        //     // 查找下一个结束标记
+        //     const endIndex = updatedContent.indexOf(codeBlockEnd, startIndex + codeBlockStart.length);
+            
+        //     if (endIndex !== -1) {
+        //         // 检查开始标记和结束标记之间是否包含其他开始标记
+        //         const innerStartIndex = updatedContent.indexOf(codeBlockStart, startIndex + codeBlockStart.length);
+                
+        //         // 如果包含其他开始标记并且在结束标记之前，则跳过当前开始标记
+        //         if (innerStartIndex !== -1 && innerStartIndex < endIndex) {
+        //             startIndex = updatedContent.indexOf(codeBlockStart, innerStartIndex + codeBlockStart.length);
+        //             continue;
+        //         }
+
+        //         // 提取代码块内容
+        //         const codeBlockContent = updatedContent.substring(startIndex + codeBlockStart.length, endIndex);
+
+        //         // 创建包含代码块的 span 元素
+        //         const codeBlockSpan = document.createElement('span');
+        //         codeBlockSpan.textContent = codeBlockContent;
+        //         codeBlockSpan.classList.add('code-block');
+
+        //         // 设置代码块的背景颜色
+        //         codeBlockSpan.style.backgroundColor = 'your-color-here';
+
+
+        //         // 替换原始代码块
+        //         updatedContent = updatedContent.substring(0, startIndex) + codeBlockSpan.outerHTML + updatedContent.substring(endIndex + codeBlockEnd.length);
+                
+        //         // 更新 startIndex，以便查找下一个代码块的起始位置
+        //         startIndex = updatedContent.indexOf(codeBlockStart, endIndex + codeBlockEnd.length);
+        //     } else {
+        //         // 如果没有找到匹配的结束标记，则跳出循环
+        //         break;
+        //     }
+        // }
+
         // 代码块背景
         const codeBlockStart = '```';
         const codeBlockEnd = '```';
@@ -93,6 +137,10 @@ fetch('/get_diaries', {
                 // 提取代码块内容
                 const codeBlockContent = updatedContent.substring(startIndex + codeBlockStart.length, endIndex);
 
+                // 创建包含代码块的 div 容器
+                const codeBlockDiv = document.createElement('div');
+                codeBlockDiv.classList.add('code-block-container');
+
                 // 创建包含代码块的 span 元素
                 const codeBlockSpan = document.createElement('span');
                 codeBlockSpan.textContent = codeBlockContent;
@@ -101,8 +149,34 @@ fetch('/get_diaries', {
                 // 设置代码块的背景颜色
                 codeBlockSpan.style.backgroundColor = 'your-color-here';
 
+                // 创建复制按钮
+                const copyButton = document.createElement('button');
+                // 使用SVG图标代替文本按钮
+                copyButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy w-4 h-auto"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>`;
+                copyButton.style.border = 'none'; // 移除按钮的边框
+                copyButton.style.backgroundColor = 'transparent'; // 设置按钮的背景为透明
+                copyButton.style.cursor = 'pointer'; // 设置按钮的光标为手型
+                copyButton.onclick = () => {
+                    // 将代码块内容复制到剪贴板
+                    navigator.clipboard.writeText(codeBlockContent)
+                        .then(() => {
+                            alert('代码块已复制到剪贴板！');
+                        })
+                        .catch(error => {
+                            console.error('复制失败：', error);
+                        });
+                };
+                // 设置复制按钮的样式
+                copyButton.style.position = 'absolute';
+                copyButton.style.top = '5px'; // 距离代码块顶部 5px
+                copyButton.style.right = '15px'; // 距离代码块右侧 15px
+
+                // 将复制按钮添加到代码块中
+                codeBlockDiv.appendChild(copyButton);
+                codeBlockDiv.appendChild(codeBlockSpan);
+
                 // 替换原始代码块
-                updatedContent = updatedContent.substring(0, startIndex) + codeBlockSpan.outerHTML + updatedContent.substring(endIndex + codeBlockEnd.length);
+                updatedContent = updatedContent.substring(0, startIndex) + codeBlockDiv.outerHTML + updatedContent.substring(endIndex + codeBlockEnd.length);
                 
                 // 更新 startIndex，以便查找下一个代码块的起始位置
                 startIndex = updatedContent.indexOf(codeBlockStart, endIndex + codeBlockEnd.length);
@@ -112,42 +186,9 @@ fetch('/get_diaries', {
             }
         }
 
-
-
-
-        //代码块背景
-        // const codeBlockStart = '```';
-        // const codeBlockEnd = '```';
-        
-        // let startIndex = content.indexOf(codeBlockStart);
-        // let updatedContent = content; // 保存更新后的内容
-        // while (startIndex !== -1) {
-        //     const endIndex = content.indexOf(codeBlockEnd, startIndex + codeBlockStart.length);
-        //     if (endIndex !== -1) {
-        //         const codeBlockContent = content.substring(startIndex + codeBlockStart.length, endIndex);
-                
-        //         // 创建包含代码块的 span 元素
-        //         const codeBlockSpan = document.createElement('span');
-        //         codeBlockSpan.textContent = codeBlockContent;
-        //         codeBlockSpan.classList.add('code-block');
-        
-        //         // 设置代码块的背景颜色
-        //         codeBlockSpan.style.backgroundColor = 'your-color-here';
-        
-        //         // 替换原始代码块
-        //         updatedContent = updatedContent.substring(0, startIndex) + codeBlockSpan.outerHTML + updatedContent.substring(endIndex + codeBlockEnd.length);
-        
-        //         // 继续查找下一个代码块
-        //         startIndex = updatedContent.indexOf(codeBlockStart, endIndex + codeBlockEnd.length);
-        //     } else {
-        //         // 如果没有找到匹配的结束标记，则跳出循环
-        //         break;
-        //     }
-        // }
-        
         // 更新 pre 的内容
         pre.innerHTML = updatedContent;
-               
+
 
 
         // 创建三个点图标
