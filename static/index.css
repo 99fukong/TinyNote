@@ -88,7 +88,7 @@ button[type="submit"] {
 }
 
 .code-block-container{
-  border-radius: 5px;
+  border: 2px solid #ffffff; /* 添加白色外边框 */
 }
 
 /* 设置超链接的默认样式 */
