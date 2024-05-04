@@ -87,9 +87,32 @@ button[type="submit"] {
   padding: 1px; /* 代码块的内边距 */
 }
 
-.code-block-container{
-  border: 2px solid #ffffff; /* 添加白色外边框 */
+/* 设置代码块容器的样式 */
+.code-block-container {
+  position: relative; /* 相对定位，作为后续绝对定位元素的参考 */
+  background-color: #1f1f1f; /* 设置背景色 */
 }
+
+/* 设置代码块的样式 */
+.code-block {
+  display: block; /* 确保span表现得像块级元素 */
+  color: #fff; /* 设置文本颜色 */
+  margin: 0; /* 去除默认的外边距 */
+  margin: 5px 0; /* 可选：为代码块添加一些外边距 */
+}
+
+/* 设置复制按钮的样式 */
+.copy-button {
+  position: absolute; /* 绝对定位，相对于最近的相对定位祖先元素 */
+  top: 2px; /* 距离容器顶部10px */
+  right: 15px; /* 距离容器右边10px */
+  cursor: pointer; /* 鼠标悬停时显示指针 */
+  background-color: transparent; /* 设置背景为透明 */
+  border: none; /* 去除边框 */
+  color: #e5e7eb; /* 设置按钮文本颜色为蓝色 */
+  width: 1rem;
+}
+
 
 /* 设置超链接的默认样式 */
 a {
@@ -113,12 +136,7 @@ a:hover {
   /* border: 1px solid white;  */
 }
 
-.code-block {
-  background-color: #252424; /* 设置代码块的背景颜色 */
-  display: block; /* 使代码块单独占据一行 */
-  padding: 5px; /* 可选：为代码块添加一些内边距 */
-  margin: 5px 0; /* 可选：为代码块添加一些外边距 */
-}
+
 
 
 
