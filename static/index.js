@@ -13,29 +13,30 @@
             });
     }
 
+    document.addEventListener('DOMContentLoaded', function () {
+        // 添加事件委托，处理按钮点击事件
+        document.addEventListener('click', function (event) {
+            // 如果点击的是类名为 pull-button 的按钮，则调用拉取函数
+            if (event.target.classList.contains('pull-button')) {
+                pullFromJianguoyun();
+            }
+        });
+    });
+
     // document.addEventListener('DOMContentLoaded', function () {
     //     // 添加事件委托，处理按钮点击事件
     //     document.addEventListener('click', function (event) {
-    //         // 如果点击的是类名为 pull-button 的按钮，则调用拉取函数
     //         if (event.target.classList.contains('pull-button')) {
     //             pullFromJianguoyun();
+    //         } else if (event.target.classList.contains('copy-button')) {
+    //             // 如果点击的是类名为 copy-button 的按钮，则复制内容
+    //             const codeBlockSpan = event.target.parentElement; // 获取父容器中的 codeBlockSpan
+    //             const content = codeBlockSpan.textContent; // 获取内容
+    //             copyText(content); // 调用复制文本函数
     //         }
     //     });
     // });
 
-    document.addEventListener('DOMContentLoaded', function () {
-        // 添加事件委托，处理按钮点击事件
-        document.addEventListener('click', function (event) {
-            if (event.target.classList.contains('pull-button')) {
-                pullFromJianguoyun();
-            } else if (event.target.classList.contains('copy-button')) {
-                // 如果点击的是类名为 copy-button 的按钮，则复制内容
-                const codeBlockSpan = event.target.parentElement; // 获取父容器中的 codeBlockSpan
-                const content = codeBlockSpan.textContent; // 获取内容
-                copyText(content); // 调用复制文本函数
-            }
-        });
-    });
     // 从本地存储获取令牌
     const token = localStorage.getItem('jwtToken');
 
@@ -83,17 +84,18 @@
         // 遍历日记列表
         diaries.forEach(diary => {
             const content = diary.content;
-            // 创建 pre-list 元素
-            const preList = document.createElement('div');
-            preList.classList.add('pre-list');
+
             //创建 pre 元素
             const pre = document.createElement('div');
             pre.classList.add('pre');
             pre.textContent = content;
 
-            //用超链接替换 ​​URL
-            replaceURLsWithLinks(pre);
+            // 创建 pre-list 元素
+            const preList = document.createElement('div');
+            preList.classList.add('pre-list');
 
+            // //用超链接替换 ​​URL
+            // replaceURLsWithLinks(pre);
 
             // 代码块
             const codeBlockStart = '```';
@@ -118,8 +120,7 @@
 
                     // 提取代码块内容
                     const codeBlockContent = updatedContent.substring(startIndex + codeBlockStart.length, endIndex)//.trim(); // 使用 .trim() 移除前后的空白符
-
-
+                    
                     // 创建包含代码块的 div 容器
                     const codeBlockDiv = document.createElement('div');
                     codeBlockDiv.classList.add('code-block-container');
@@ -133,6 +134,17 @@
                     const svgButton = document.createElement('button');
                     svgButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy w-4 h-auto"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>`;
                     svgButton.classList.add('copy-button');
+
+                    // 添加事件监听器以复制代码块内容
+                    function handleButtonClick() {
+                        navigator.clipboard.writeText(codeBlockSpan.textContent).then(() => {
+                            alert('代码已复制到剪贴板');
+                        }).catch(err => {
+                            console.error('复制失败', err);
+                        });
+                    }
+                    
+                    svgButton.addEventListener('click', handleButtonClick);
 
                     // 将复制按钮添加到代码块容器中
                     codeBlockDiv.appendChild(codeBlockSpan);
@@ -152,6 +164,9 @@
 
             // 更新 pre 的内容
             pre.innerHTML = updatedContent;
+            
+            //用超链接替换 ​​URL
+            replaceURLsWithLinks(pre);
 
             // 创建三个点图标
             const ellipsisIcon = document.createElement('span');
