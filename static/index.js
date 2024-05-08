@@ -87,12 +87,12 @@
 
             // 创建 LogContent-list 元素
             var LogDiv = document.createElement('div');
-            LogDiv.classList.add('pre-list');
+            LogDiv.classList.add('LogDiv');
             
             
             //创建 LogContent 元素
             var LogContent = document.createElement('div');
-            LogContent.classList.add('pre');
+            LogContent.classList.add('LogContent');
             LogContent.textContent = content;
 
 
@@ -104,8 +104,6 @@
 
             let startIndex = content.indexOf(codeBlockStart);
             let updatedContent = content; // 保存更新后的内容
-            // // 定义一个数组来存储所有的按钮引用
-            // const copyButtons = [];
 
             while (startIndex !== -1) {
                 // 查找下一个结束标记
@@ -138,9 +136,6 @@
                     svgButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy w-4 h-auto"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>`;
                     svgButton.classList.add('copy-button');
 
-                    // 添加按钮引用到数组中
-                    // copyButtons.push(svgButton);
-
                     // 将复制按钮添加到代码块容器中
                     codeBlockDiv.appendChild(codeBlockSpan);
                     codeBlockDiv.appendChild(svgButton);
@@ -163,46 +158,14 @@
             LogContent.innerHTML = updatedContent;
 
             // 添加事件监听器以复制代码块内容
-            // function handleButtonClick() {
-            //     navigator.clipboard.writeText(codeBlockSpan.textContent).then(() => {
-            //         alert('代码已复制到剪贴板');
-            //     }).catch(err => {
-            //         console.error('复制失败', err);
-            //     });
-            // }
-            
-
-            // let preSvgButtons = LogContent.querySelectorAll('.code-block-container .copy-button');
-            // // debugger;
-            // if (preSvgButtons.length > 0) {
-            //     // 执行你的操作
-            //     console.log("成功选择到了按钮");
-            // } else {
-            //     console.log("未成功选择到按钮");
-            // }            
-            
-            // preSvgButtons.forEach(preSvgButton => {
-            //     preSvgButton.addEventListener('click', function(event) {
-            //         // debugger;
-            //         let codeBlockSpan = preSvgButton.closest('.code-block-container').querySelector('.code-block');
-            //         if (codeBlockSpan) {
-            //             navigator.clipboard.writeText(codeBlockSpan.textContent).then(() => {
-            //                 alert('代码已复制到剪贴板');
-            //             }).catch(err => {
-            //                 console.error('复制失败', err);
-            //             });
-            //         }
-            //     });
-            // });
-
             let codeBlockDivs = LogContent.querySelectorAll('.code-block-container');
-            // debugger;
-            if (codeBlockDivs.length > 0) {
-                // 执行你的操作
-                console.log("成功选择到了代码块");
-            } else {
-                console.log("未成功选择到代码块");
-            }            
+            // // debugger;
+            // if (codeBlockDivs.length > 0) {
+            //     // 执行你的操作
+            //     console.log("成功选择到了代码块");
+            // } else {
+            //     console.log("未成功选择到代码块");
+            // }            
             
             codeBlockDivs.forEach(codeBlockDiv => {
                 let SvgButton = codeBlockDiv.querySelector('.copy-button')
@@ -218,8 +181,6 @@
                 }
             });            
             
-            // //用超链接替换 ​​URL
-            // replaceURLsWithLinks(LogContent);
 
             // 创建三个点图标
             const ellipsisIcon = document.createElement('span');

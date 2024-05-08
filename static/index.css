@@ -63,7 +63,7 @@ button[type="submit"] {
 }
 
 /* 日记块 */
-.pre { 
+.LogContent { 
   width: 100%;
   font-size: 20px;
   border: 2px solid hsl(240, 2%, 9%); /* 设置边框样式 */
@@ -74,7 +74,7 @@ button[type="submit"] {
   padding: 5px; /* 代码块的内边距 */
 }
 
-.pre-list {
+.LogDiv {
   position: relative; 
   white-space: pre-wrap;
   word-wrap: break-word;
