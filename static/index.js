@@ -47,7 +47,7 @@
         content = content.replace(urlRegex, function (url) {
             return '<a href="' + url + '">' + url + '</a>';
         });
-        pre_element.innerHTML = content;
+        // pre_element.innerHTML = content;
     }
 
     // 获取日记列表元素
@@ -83,19 +83,20 @@
     .then(diaries => {
         // 遍历日记列表
         diaries.forEach(diary => {
-            const content = diary.content;
+            var content = diary.content;
 
-            //创建 pre 元素
-            const pre = document.createElement('div');
-            pre.classList.add('pre');
-            pre.textContent = content;
+            // 创建 LogContent-list 元素
+            var LogDiv = document.createElement('div');
+            LogDiv.classList.add('pre-list');
+            
+            
+            //创建 LogContent 元素
+            var LogContent = document.createElement('div');
+            LogContent.classList.add('pre');
+            LogContent.textContent = content;
 
-            // 创建 pre-list 元素
-            const preList = document.createElement('div');
-            preList.classList.add('pre-list');
 
-            // //用超链接替换 ​​URL
-            // replaceURLsWithLinks(pre);
+
 
             // 代码块
             const codeBlockStart = '```';
@@ -103,6 +104,8 @@
 
             let startIndex = content.indexOf(codeBlockStart);
             let updatedContent = content; // 保存更新后的内容
+            // // 定义一个数组来存储所有的按钮引用
+            // const copyButtons = [];
 
             while (startIndex !== -1) {
                 // 查找下一个结束标记
@@ -135,21 +138,13 @@
                     svgButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy w-4 h-auto"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>`;
                     svgButton.classList.add('copy-button');
 
-                    // 添加事件监听器以复制代码块内容
-                    function handleButtonClick() {
-                        navigator.clipboard.writeText(codeBlockSpan.textContent).then(() => {
-                            alert('代码已复制到剪贴板');
-                        }).catch(err => {
-                            console.error('复制失败', err);
-                        });
-                    }
-                    
-                    svgButton.addEventListener('click', handleButtonClick);
+                    // 添加按钮引用到数组中
+                    // copyButtons.push(svgButton);
 
                     // 将复制按钮添加到代码块容器中
                     codeBlockDiv.appendChild(codeBlockSpan);
-                    codeBlockSpan.appendChild(svgButton);
-                    pre.appendChild(codeBlockDiv);
+                    codeBlockDiv.appendChild(svgButton);
+                    LogContent.appendChild(codeBlockDiv);
 
                     // 替换原始代码块
                     updatedContent = updatedContent.substring(0, startIndex) + codeBlockDiv.outerHTML + updatedContent.substring(endIndex + codeBlockEnd.length);
@@ -162,11 +157,69 @@
                 }
             }
 
-            // 更新 pre 的内容
-            pre.innerHTML = updatedContent;
-            
             //用超链接替换 ​​URL
-            replaceURLsWithLinks(pre);
+            replaceURLsWithLinks(LogContent);
+            // 更新 LogContent 的内容
+            LogContent.innerHTML = updatedContent;
+
+            // 添加事件监听器以复制代码块内容
+            // function handleButtonClick() {
+            //     navigator.clipboard.writeText(codeBlockSpan.textContent).then(() => {
+            //         alert('代码已复制到剪贴板');
+            //     }).catch(err => {
+            //         console.error('复制失败', err);
+            //     });
+            // }
+            
+
+            // let preSvgButtons = LogContent.querySelectorAll('.code-block-container .copy-button');
+            // // debugger;
+            // if (preSvgButtons.length > 0) {
+            //     // 执行你的操作
+            //     console.log("成功选择到了按钮");
+            // } else {
+            //     console.log("未成功选择到按钮");
+            // }            
+            
+            // preSvgButtons.forEach(preSvgButton => {
+            //     preSvgButton.addEventListener('click', function(event) {
+            //         // debugger;
+            //         let codeBlockSpan = preSvgButton.closest('.code-block-container').querySelector('.code-block');
+            //         if (codeBlockSpan) {
+            //             navigator.clipboard.writeText(codeBlockSpan.textContent).then(() => {
+            //                 alert('代码已复制到剪贴板');
+            //             }).catch(err => {
+            //                 console.error('复制失败', err);
+            //             });
+            //         }
+            //     });
+            // });
+
+            let codeBlockDivs = LogContent.querySelectorAll('.code-block-container');
+            // debugger;
+            if (codeBlockDivs.length > 0) {
+                // 执行你的操作
+                console.log("成功选择到了代码块");
+            } else {
+                console.log("未成功选择到代码块");
+            }            
+            
+            codeBlockDivs.forEach(codeBlockDiv => {
+                let SvgButton = codeBlockDiv.querySelector('.copy-button')
+                let codeBlockSpan = codeBlockDiv.querySelector('.code-block');
+                if (SvgButton){
+                    SvgButton.addEventListener('click', function(event) {
+                        navigator.clipboard.writeText(codeBlockSpan.textContent).then(() => {
+                            alert('代码已复制到剪贴板');
+                        }).catch(err => {
+                            console.error('复制失败', err);
+                        });
+                    });
+                }
+            });            
+            
+            // //用超链接替换 ​​URL
+            // replaceURLsWithLinks(LogContent);
 
             // 创建三个点图标
             const ellipsisIcon = document.createElement('span');
@@ -237,8 +290,7 @@
                     })
                     .then(() => {
                         // 从页面中删除日记
-                        // diaryList.removeChild(pre);
-                        diaryList.removeChild(preList);
+                        diaryList.removeChild(LogDiv);
                     })
                     .catch(error => console.error('删除失败：', error));
                 }
@@ -250,16 +302,16 @@
 
             // 将 popup 添加到 pop 中
             pop.appendChild(popup);
-            // 将 pre 和 ellipsisIcon 添加到 preList 中
-            preList.appendChild(pre);
+            // 将 LogContent 和 ellipsisIcon 添加到 LogDiv 中
+            LogDiv.appendChild(LogContent);
             
             pop.appendChild(ellipsisIcon);
 
-            // 将 pop 添加到 preList 中
-            preList.appendChild(pop);
+            // 将 pop 添加到 LogDiv 中
+            LogDiv.appendChild(pop);
 
-            // 将 preList 添加到 diaryList 中
-            diaryList.appendChild(preList);
+            // 将 LogDiv 添加到 diaryList 中
+            diaryList.appendChild(LogDiv);
 
 
 
