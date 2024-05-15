@@ -23,20 +23,6 @@
         });
     });
 
-    // document.addEventListener('DOMContentLoaded', function () {
-    //     // 添加事件委托，处理按钮点击事件
-    //     document.addEventListener('click', function (event) {
-    //         if (event.target.classList.contains('pull-button')) {
-    //             pullFromJianguoyun();
-    //         } else if (event.target.classList.contains('copy-button')) {
-    //             // 如果点击的是类名为 copy-button 的按钮，则复制内容
-    //             const codeBlockSpan = event.target.parentElement; // 获取父容器中的 codeBlockSpan
-    //             const content = codeBlockSpan.textContent; // 获取内容
-    //             copyText(content); // 调用复制文本函数
-    //         }
-    //     });
-    // });
-
     // 从本地存储获取令牌
     const token = localStorage.getItem('jwtToken');
 
@@ -47,7 +33,6 @@
         content = content.replace(urlRegex, function (url) {
             return '<a href="' + url + '">' + url + '</a>';
         });
-        // pre_element.innerHTML = content;
     }
 
     // 获取日记列表元素
@@ -83,89 +68,454 @@
     .then(diaries => {
         // 遍历日记列表
         diaries.forEach(diary => {
+            // debugger;
             var content = diary.content;
 
             // 创建 LogContent-list 元素
             var LogDiv = document.createElement('div');
             LogDiv.classList.add('LogDiv');
-            
-            
+                  
             //创建 LogContent 元素
+            // var LogContent = document.createElement('div');
+            // LogContent.classList.add('LogContent');
+            // debugger;
+            // processLogEntryText2(content);
+            // debugger;
+            // // LogContent.textContent = content;
+
             var LogContent = document.createElement('div');
             LogContent.classList.add('LogContent');
-            LogContent.textContent = content;
+            //debugger;
+            var logText = content;
+            debugger;
+            processLogEntryText2(logText);
 
 
+            function copyIconSvgButtonListener(button) {
+                let buttonDom = button; // button 已经是原生 DOM 元素
+                let clipboard = new ClipboardJS(buttonDom, {
+                    text: function(trigger) {
+                        // trigger DOM 元素
+                        var codeContainer = trigger.closest('.code-container');
+                        var code = codeContainer.querySelector('pre').textContent;
+                        return removeMinimumIndentation(code);
+                    }
+                });
+            
+                // 处理复制成功事件（可选）
+                clipboard.on('success', function(e) {
+                    console.log('复制成功');
+                    showNotification('Copy Success!', 700);
+                    e.clearSelection();
+                });
+            
+                // 处理复制失败事件（可选）
+                clipboard.on('error', function(e) {
+                    console.error('复制失败：', e.action);
+                });
+            }
+ 
 
-
-            // 代码块
-            const codeBlockStart = '```';
-            const codeBlockEnd = '```';
-
-            let startIndex = content.indexOf(codeBlockStart);
-            let updatedContent = content; // 保存更新后的内容
-
-            while (startIndex !== -1) {
-                // 查找下一个结束标记
-                const endIndex = updatedContent.indexOf(codeBlockEnd, startIndex + codeBlockStart.length);
-                
-                if (endIndex !== -1) {
-                    // 检查开始标记和结束标记之间是否包含其他开始标记
-                    const innerStartIndex = updatedContent.indexOf(codeBlockStart, startIndex + codeBlockStart.length);
-                    
-                    // 如果包含其他开始标记并且在结束标记之前，则跳过当前开始标记
-                    if (innerStartIndex !== -1 && innerStartIndex < endIndex) {
-                        startIndex = updatedContent.indexOf(codeBlockStart, innerStartIndex + codeBlockStart.length);
+            function removeMinimumIndentation(text) {
+                // 将文本分割成行数组
+                const lines = text.split('\n');
+            
+                // 初始化最小缩进量为一个较大的值
+                let minIndentation = Infinity;
+            
+                // 遍历每一行，找到最小缩进量，但不处理空行
+                for (const line of lines) {
+                    if (line.trim() === '') {
                         continue;
                     }
+            
+                    let indentation = 0;
+                    while (line[indentation] === ' ') {
+                        indentation++;
+                    }
+            
+                    if (indentation < minIndentation) {
+                        minIndentation = indentation;
+                    }
+                }
+            
+                // 如果所有行都是空行或没有缩进，设置最小缩进为0
+                if (minIndentation === Infinity) {
+                    minIndentation = 0;
+                }
+            
+                // 去除每行的最小缩进量空格，并忽略完全是空格的行
+                const result = lines.map(line => {
+                    if (line.trim() === '') {
+                        return line;
+                    } else {
+                        return line.slice(minIndentation);
+                    }
+                }).join('\n');
+            
+                return result;
+            }
+              
+            function addCodeBlockCopyListener(LogContent) {
+                // 获取替换后的代码块元素
+                var codeContainers = LogContent.querySelectorAll('.code-container');
+              
+                // 为每个代码块元素添加点击事件监听器
+                codeContainers.forEach(function(codeContainer) {
+                  var button = codeContainer.querySelector('.copyIconSvgButton');
+                  if (button) {
+                    copyIconSvgButtonListener(button);
+                  }
+                });
+              }
+              
+            //新代码
+            function processLogEntryText2(logText) {
+                var textString = logText;
+                // textString  = replaceTabWithSpace(logText);
+                // textString  = logText;
+                var Matches = [];
+                // const codeBlockLinesPattern = {regex:/[\t\x20]{2,}(?!\\)```([\s\S]*?)```(?:$|[\x20]*\n)(?!\n)/gi, type: 'codeBlockBetweenLines'}
+                // const codeBlockLinesPattern = {regex:/(?!\\)```([\s\S]*?)```(?:$|[\x20]*\n)/gi, type: 'codeBlockBetweenLines'}
+                const codeBlockLinesPattern = {regex:/(?!\\)```([\s\S]*?)```/gi, type: 'codeBlockBetweenLines'}
+                const inlinePattern = {regex:/(?<!``)(`[^`]+`)/g, type: 'inLinecodeBlock'}
+                const otherPatterns = [
+                    // {regex:/((?<![##])[##]{1}(?![##])[/\w\u4e00-\u9fff]+(?=[\x20\n]|$))/g, type: 'tag'},
+                    {regex:/((?<![#])[#]{1}[/\w\u4e00-\u9fff]+(?![#]))/g, type: 'tag'},
+                    // {regex:/(https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?&/=]*))/g, type: 'url'},
+                    {regex:/(https?:\/\/(?:[a-zA-Z0-9.-]+|\d{1,3}(?:\.\d{1,3}){3})(?::\d+)?(?:\/[-a-zA-Z0-9@:%_\+.~#?&/=]*)?)/g, type: 'url'},
+                    // {regex:/(?:\s|\r?\n)*?\$\$([\s\S]*?)\$\$(?:\s|\r?\n)*?/g, type: 'MulLineslatex'},
+                    // {regex:/(?:\$|\\\[|\\\()([\s\S]*?)(?:\$|\\\]|\\\))/g, type: 'InLineslatex'},
+                ]
+                Matches = mulTextMatchPattern(textString, codeBlockLinesPattern, inlinePattern, otherPatterns)
 
-                    // 提取代码块内容
-                    const codeBlockContent = updatedContent.substring(startIndex + codeBlockStart.length, endIndex)//.trim(); // 使用 .trim() 移除前后的空白符
-                    
-                    // 创建包含代码块的 div 容器
-                    const codeBlockDiv = document.createElement('div');
-                    codeBlockDiv.classList.add('code-block-container');
 
-                    // 创建包含代码块的 span 元素
-                    const codeBlockSpan = document.createElement('span');
-                    codeBlockSpan.textContent = codeBlockContent;
-                    codeBlockSpan.classList.add('code-block');
+                //LogContent.empty()
+                debugger
+                LogContent.innerHTML = ''; // 清空当前元素内容
+                Matches.forEach(match => {
+                    let element;
+                    debugger
+                    switch (match.type) {
+                    case 'text':
+                        element = document.createElement('span');
+                        element.textContent = match.content;
+                        break;
+                    case 'codeBlockBetweenLines':
+                        element = createCodeBlockBetweenLinesElement(match.content)
+                        debugger
+                        break;
+                    case 'inLinecodeBlock':
+                        element = createInLinecodeBlockElement(match.content)
+                        
+                        break;
+                    case 'tag':
+                        element = createTagElement(match.content)
+                        break;
+                    case 'url':
+                        element = createUrlElement(match.content)
+                        break;
+                    // case 'MulLineslatex':
+                    //     element = createMulLineslatexElement(match.content)
+                    //     break;
+                    // case 'InLineslatex':
+                    //     element = createInLineslatexElement(match.content)
+                    //     break;            
+                    }
+                    LogContent.appendChild(element)//
+                });        
+                addCodeBlockCopyListener(LogContent)
+            }
 
-                    // 创建包含 SVG 图标的按钮
-                    const svgButton = document.createElement('button');
-                    svgButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy w-4 h-auto"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>`;
-                    svgButton.classList.add('copy-button');
 
-                    // 将复制按钮添加到代码块容器中
-                    codeBlockDiv.appendChild(codeBlockSpan);
-                    codeBlockDiv.appendChild(svgButton);
-                    LogContent.appendChild(codeBlockDiv);
+            //匹配函数, 返回匹配后的数组, 按原来的顺序
+            function textMatchPattern(input, Pattern, PatternType) {
+                let match;
+                let Matches = [];
+                let lastIndex = 0; // 用于跟踪上一个匹配项的结束位置
 
-                    // 替换原始代码块
-                    updatedContent = updatedContent.substring(0, startIndex) + codeBlockDiv.outerHTML + updatedContent.substring(endIndex + codeBlockEnd.length);
-                    
-                    // 更新 startIndex，以便查找下一个代码块的起始位置
-                    startIndex = updatedContent.indexOf(codeBlockStart, endIndex + codeBlockEnd.length);
-                } else {
-                    // 如果没有找到匹配的结束标记，则跳出循环
-                    break;
+                // 搜集所有行间代码块及其位置
+                while ((match = Pattern.exec(input)) !== null) {
+                    // 检查并添加前一个代码块后和当前代码块前的非代码块文本
+                    if (match.index > lastIndex) {
+                        Matches.push({
+                            type: 'text',
+                            content: input.substring(lastIndex, match.index),
+                        });
+                    }
+
+                    Matches.push({
+                        type: PatternType,
+                        content: match[1],
+                    });
+
+                    // 更新lastIndex为当前代码块的结束位置
+                    lastIndex = match.index + match[0].length;
+                }
+
+                // 检查最后一个代码块后是否还有文本
+                if (lastIndex < input.length) {
+                    Matches.push({
+                        type: 'text',
+                        content: input.substring(lastIndex),
+                    });
+                }
+                return Matches;
+            }
+
+            // //用于将给定字符串中的制表符 (\t) 替换为两个空格。
+            // function replaceTabWithSpace(logText) {
+                
+            //     // 定义匹配\t的正则表达式
+            //     var tabRegex = /\t{1,}/g;
+            
+            //     logText = logText.replace(tabRegex, function(match) {
+            //         // // 使用空格替换
+            //         return '  '.repeat(match.length);
+            
+            //     });    
+            
+            //     // 设置<log_entry>元素的HTML内容为替换后的内容
+            //     // log_entry.html(htmlString);
+            //     return logText
+            // }
+
+            function subTextMatchPattern(Matches, Pattern, PatternType){
+                let tempMatches = [...Matches];
+                for(let i = 0, addItems = 0; i < tempMatches.length; i++){
+                    let item  = tempMatches[i];
+                    if (item.type == 'text'){
+                        let PatternMatches = textMatchPattern(item.content, Pattern, PatternType);
+                        Matches.splice(i + addItems, 1, ...PatternMatches)
+                        addItems = addItems + PatternMatches.length - 1
+                    }
                 }
             }
+
+
+            function mulTextMatchPattern(input, codeBlockLinesPattern, inlinePattern, otherPatterns){
+                let Matches = textMatchPattern(input, codeBlockLinesPattern.regex, codeBlockLinesPattern.type);
+                subTextMatchPattern(Matches, inlinePattern.regex, inlinePattern.type)
+                otherPatterns.forEach(element => {
+                    subTextMatchPattern(Matches, element.regex, element.type)
+                }); 
+                return Matches
+            }
+
+            function createCodeBlockBetweenLinesElement(content) {
+                // 定义语言映射表
+                const languageMap = {
+                    'python': 'Python',
+                    'c': 'C',
+                    'make': 'Makefile',
+                    'cmd': 'CMD',
+                    'sql': 'SQL',
+                    'db': 'Database',
+                    'mongodb': 'MongoDB',
+                    'c#': 'C#',
+                    'c++': 'C++',
+                    'cpp': 'cpp',
+                    'objective-c': 'Objective-C',
+                    'objective-c++': 'Objective-C++',
+                    'js': 'JavaScript',
+                    'javascript': 'JavaScript',
+                    'css': 'CSS',
+                    'html': 'HTML',
+                    'php': 'PHP',
+                    'go': 'Go',
+                    'ruby': 'Ruby',
+                    'rust': 'Rust',
+                    'java': 'Java',
+                    'shell': 'Shell',
+                    'sh': 'Shell',
+                    'code': 'Code',
+                    'py': 'Python',
+                    'regex':'regex',
+                    'json':'Json'
+                };
+            
+                // 创建包含 copyIcon 的 div 元素
+                var copyIcon = document.createElement('div');
+                copyIcon.classList.add('copyIcon');
+            
+                // 创建包含 Code 的 span 元素
+                var codeTag = document.createElement('span');
+                codeTag.classList.add('codeTag');
+                codeTag.textContent = 'Code';
+            
+                // 创建 button 元素
+                var copyIconSvgButton = document.createElement('button');
+                copyIconSvgButton.classList.add('copyIconSvgButton');
+            
+                // 创建 svg 元素
+                var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+                svg.setAttribute('width', '24');
+                svg.setAttribute('height', '24');
+                svg.setAttribute('viewBox', '0 0 24 24');
+                svg.setAttribute('fill', 'none');
+                svg.setAttribute('stroke', 'currentColor');
+                svg.setAttribute('stroke-width', '2');
+                svg.setAttribute('stroke-linecap', 'round');
+                svg.setAttribute('stroke-linejoin', 'round');
+                svg.classList.add('lucide', 'lucide-copy', 'w-4', 'h-auto');
+
+                // 创建 rect 元素
+                var rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                rect.setAttribute('width', '14');
+                rect.setAttribute('height', '14');
+                rect.setAttribute('x', '8');
+                rect.setAttribute('y', '8');
+                rect.setAttribute('rx', '2');
+                rect.setAttribute('ry', '2');
+            
+                // 创建 path 元素
+                var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path.setAttribute('d', 'M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2');
+            
+                // 组装 SVG 元素
+                svg.appendChild(rect);
+                svg.appendChild(path);
+            
+                // 将 SVG 添加到按钮
+                copyIconSvgButton.appendChild(svg);
+            
+                // 将 span 和 button 添加到 div
+                copyIcon.appendChild(codeTag);
+                copyIcon.appendChild(copyIconSvgButton);
+            
+                // 使用正则表达式匹配第一个单词
+                const regex = /([\S]+)([\s\S]*)/;
+                const matches = content.match(regex);
+                let language = '';
+                let code = '';
+                if (matches) {
+                    language = matches[1];
+                    code = matches[2];
+                }
+                let lowerCaseLanguage = language.toLowerCase();
+                let languageName = languageMap[lowerCaseLanguage];
+            
+                if (languageName) {
+                    codeTag.textContent = languageName;
+                } else {
+                    code = language + code;
+                    codeTag.textContent = 'Code';
+                }
+            
+                // 移除代码段开头和结尾的换行符, 不可以/^\s*/, 要保留前缀格式
+                code = code.replace(/^\n*/, '').trimEnd();
+            
+                // 使用<div>标签包裹复制图标和<pre>标签
+                var container = document.createElement('div');
+                container.classList.add('code-container');
+                container.appendChild(copyIcon);
+            
+                var pre = document.createElement('pre');
+                pre.textContent = code;
+                container.appendChild(pre);
+            
+                return container;
+            }
+
+
+            function createInLinecodeBlockElement(content){
+                // let Element = $(`<span class="singleLineCode">${content}</span>`);
+                // 创建一个空的span元素
+                let element = document.createElement('span');
+                // 添加类名
+                element.className = 'singleLineCode';
+                // 使用textContent属性安全地添加内容
+                element.textContent = content;
+                
+                // 如果你使用jQuery并希望返回一个jQuery对象
+                // return $(element);
+
+                // 如果直接使用原生DOM操作，返回原生DOM元素
+                return element;
+            }
+
+            function createUrlElement(content){
+                // 创建一个空的<a>元素
+                let element = document.createElement('a');
+                // 设置href属性
+                element.href = content;
+                // 设置显示的文本
+                element.textContent = content;
+                
+                // 如果你使用jQuery并希望返回一个jQuery对象
+                // return $(element);
+
+                // 如果直接使用原生DOM操作，返回原生DOM元素
+                return element;    
+            }
+
+            function createTagElement(content){
+                // 去除尾部空格并保存
+                let trimmedStr = content.trimEnd();
+                let endWhitespace = content.slice(trimmedStr.length);
+
+                // 创建一个空的span元素
+                let spanElement = document.createElement('span');
+                // 添加类名
+                spanElement.className = 'tag';
+                // 使用textContent属性安全地设置文本内容
+                spanElement.textContent = trimmedStr;
+
+                // 如果你使用jQuery并希望返回一个jQuery对象
+                // let $spanElement = $(spanElement);
+
+                // 处理尾随空格。由于尾随空格是纯文本，我们可以安全地添加。
+                // if (endWhitespace.length > 0) {
+                //     // 创建一个文本节点来表示尾随空格，并将其添加到span元素之后
+                //     $spanElement.after(document.createTextNode(endWhitespace));
+                // }
+
+                // 返回jQuery对象
+                // return $spanElement;   
+                return spanElement;
+            }
+
+            function createMulLineslatexElement(content){
+                // 将 HTML 字符串解析为文本, 并去除前后空白字符
+                let equation = content.trim(); 
+                let latexBlock = document.createElement('div');
+                // 添加类名
+                latexBlock.className = 'BlocklatexMath';
+                // latexBlock.classList.add('BlocklatexMath'); 
+                // 设置为块级公式
+                katex.render(equation, latexBlock, { displayMode: true }); 
+                return latexBlock
+            }
+
+            // function createInLineslatexElement(content){
+            //     // 将 HTML 字符串解析为文本, 并去除前后空白字符
+            //     let equation = content.trim(); 
+            //     let span = document.createElement('span');
+            //     // 不需要为 span 元素添加 data-latex 属性以存储原始的 LaTeX 代码, 
+            //     // 否则 LogContent.html() 再次又包含了 latex 源码, 再次解析会乱码
+
+            //     // span.setAttribute('data-latex', match); 
+            //     // span.classList.add('latexMath'); // 添加类名
+            //     // try{ katex.render(equation, span);} catch(e){return match}
+            //     // return span  
+            //     span.className = 'latexMath';
+            //     try {
+            //         katex.render(equation, span);
+            //     } catch (e) {
+            //         console.error('Error rendering LaTeX', e);
+            //     }
+            //     return span;
+            // }
 
             //用超链接替换 ​​URL
             replaceURLsWithLinks(LogContent);
             // 更新 LogContent 的内容
-            LogContent.innerHTML = updatedContent;
+            // LogContent.innerHTML = updatedContent;
 
             // 添加事件监听器以复制代码块内容
             let codeBlockDivs = LogContent.querySelectorAll('.code-block-container');
             // // debugger;
-            // if (codeBlockDivs.length > 0) {
-            //     // 执行你的操作
-            //     console.log("成功选择到了代码块");
-            // } else {
-            //     console.log("未成功选择到代码块");
-            // }            
             
             codeBlockDivs.forEach(codeBlockDiv => {
                 let SvgButton = codeBlockDiv.querySelector('.copy-button')
@@ -195,25 +545,6 @@
             const pop = document.createElement('div');
             pop.classList.add('pop');
 
-
-            // 创建拉取按钮
-            // const pullButton = document.createElement('button');
-            // pullButton.textContent = '拉取';
-            // pullButton.onclick = () => {
-            //     // 点击拉取按钮将坚果云的md文档拉取到数据库
-            //     fetch('/pull_from_jianguoyun')
-            //         .then(response => response.json())
-            //         .then(data => {
-            //             alert(data.message); // 使用弹窗显示服务器响应的消息
-            //             location.reload(); // 刷新当前页面
-            //             //popup.style.display = 'none'; // 隐藏悬浮窗
-            //         })
-            //         .catch(error => {
-            //             console.error('Error:', error);
-            //             alert('拉取过程中出现错误');
-            //         });
-            // };
-            // popup.appendChild(pullButton);
 
             // 创建编辑按钮
             const editButton = document.createElement('button');
@@ -274,8 +605,7 @@
             // 将 LogDiv 添加到 diaryList 中
             diaryList.appendChild(LogDiv);
 
-
-
+            
             // 当鼠标悬停在三个点图标上时显示悬浮窗
             ellipsisIcon.addEventListener('mouseenter', function(event) {
                 popup.style.display = 'block'; // 显示悬浮窗

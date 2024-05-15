@@ -74,6 +74,7 @@ button[type="submit"] {
   padding: 5px; /* 代码块的内边距 */
 }
 
+/* 日记条 */
 .LogDiv {
   position: relative; 
   white-space: pre-wrap;
@@ -93,16 +94,9 @@ button[type="submit"] {
   background-color: #1f1f1f; /* 设置背景色 */
 }
 
-/* 设置代码块的样式 */
-.code-block {
-  display: block; /* 确保span表现得像块级元素 */
-  color: #fff; /* 设置文本颜色 */
-  margin: 0; /* 去除默认的外边距 */
-  margin: 5px 0; /* 可选：为代码块添加一些外边距 */
-}
 
 /* 设置复制按钮的样式 */
-.copy-button {
+  .copyIconSvgButton{
   position: absolute; /* 绝对定位，相对于最近的相对定位祖先元素 */
   top: 2px; /* 距离容器顶部10px */
   right: 15px; /* 距离容器右边10px */
@@ -113,6 +107,96 @@ button[type="submit"] {
   width: 1rem;
 }
 
+.copyIcon{
+  align-items: center;
+  justify-content: space-between;
+  display: flex;
+}
+
+.code-container{
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(63, 63, 70);
+  margin: 0; /* 去除默认的外边距 */
+
+  /* align-items: end; */
+}
+
+pre {
+  display: block;
+  font-family: monospace;
+  unicode-bidi: isolate;
+  white-space: pre;
+  margin: 0em 0px; 
+}
+
+.LogContent {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  /* padding: 2px;  */
+  margin-top: 10px;
+  /* 设置上边距为 10 像素 */
+  margin-bottom: 10px;
+  /* 设置下边距为 10 像素 */
+  width: 100%;
+  font-size: 1rem;
+  border: 0px solid hsl(0, 0%, 0%);
+  /* 设置边框样式 */
+  /* margin: 0 auto 10px; 设置外边距 */
+  font-family: "Source Code Pro", "Courier New", "等线", Courier, monospace;
+  text-rendering: geometricPrecision;
+  line-height: 1.35;
+  tab-size: 2;
+  display: block;
+  /* 设置为块级元素 */
+  background-color: rgb(39, 39, 42);
+  border-radius: 6px;
+  /* 设置所有四个角的圆角大小为 10 像素 */
+  /* background-color: #27272A; */
+}
+
+.copyIconSvgButton{
+  --Icon-margin: initial;
+  --Icon-color: var(--joy-palette-text-icon);
+  --Icon-fontSize: calc(var(--IconButton-size, 2rem) / 1.6);
+  --CircularProgress-size: 20px;
+  --CircularProgress-thickness: 2px;
+  min-width: var(--IconButton-size, 2rem);
+  min-height: var(--IconButton-size, 2rem);
+  font-size: var(--joy-fontSize-sm);
+  padding-inline: 2px;
+  -webkit-tap-highlight-color: transparent;
+  padding-block: 0px;
+  font-family: var(--joy-fontFamily-body);
+  font-weight: var(--joy-fontWeight-md);
+  margin: var(--IconButton-margin);
+  border-radius: var(--IconButton-radius, var(--joy-radius-sm));
+  border: none;
+  box-sizing: border-box;
+  background-color: transparent;
+  cursor: pointer;
+  display: inline-flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  position: relative;
+  --variant-borderWidth: 0px;
+  color: var(--variant-plainColor, var(--joy-palette-neutral-plainColor, var(--joy-palette-neutral-700, #ffffff)));
+  --IconButton-size: 24px;   
+}
+
+.tag{
+  color:rgb(254, 121, 45);
+  background-color: rgb(63, 63, 70);
+  border-radius: 2px;
+}
+
+.singleLineCode{
+  color:rgb(5, 238, 238);
+  background-color: rgb(63, 63, 70);
+  border-radius: 2px;
+}
 
 /* 设置超链接的默认样式 */
 a {
@@ -132,8 +216,6 @@ a:hover {
   top: 0; 
   right: 0; /* 将 left 修改为 right */
   width: 80px;
-  
-  /* border: 1px solid white;  */
 }
 
 
@@ -143,9 +225,6 @@ a:hover {
   display: none; /* 默认不显示 */
   /*display: inline-block; /* 将元素显示为块级元素*/ 
   width: 60px;
-  /* border: 1px solid white;  */
-
-  
 }
 
 .popup button { 
@@ -155,7 +234,6 @@ a:hover {
   border: none; /* 移除按钮边框 */
   /* border-radius: 5px;  */
   cursor: pointer; /* 设置鼠标样式为手型 */
-  /* margin-bottom: 5px;  */
   font-size: 1rem;
 }
 
