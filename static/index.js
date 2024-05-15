@@ -177,7 +177,9 @@
                 var Matches = [];
                 // const codeBlockLinesPattern = {regex:/[\t\x20]{2,}(?!\\)```([\s\S]*?)```(?:$|[\x20]*\n)(?!\n)/gi, type: 'codeBlockBetweenLines'}
                 // const codeBlockLinesPattern = {regex:/(?!\\)```([\s\S]*?)```(?:$|[\x20]*\n)/gi, type: 'codeBlockBetweenLines'}
-                const codeBlockLinesPattern = {regex:/(?!\\)```([\s\S]*?)```/gi, type: 'codeBlockBetweenLines'}
+                // /(?:^|\n)```([\s\S]*?)```(?:\n|$)/g;
+                // const codeBlockLinesPattern = {regex:/(?:\n|^)```([\s\S]*?)```/gi, type: 'codeBlockBetweenLines'}
+                const codeBlockLinesPattern = {regex:/(?:^|\r?\n)```([\s\S]*?)(?:\r?\n?)```(?:\r?\n|$)/gi, type: 'codeBlockBetweenLines'}
                 const inlinePattern = {regex:/(?<!``)(`[^`]+`)/g, type: 'inLinecodeBlock'}
                 const otherPatterns = [
                     // {regex:/((?<![##])[##]{1}(?![##])[/\w\u4e00-\u9fff]+(?=[\x20\n]|$))/g, type: 'tag'},
@@ -385,7 +387,8 @@
                 copyIcon.appendChild(copyIconSvgButton);
             
                 // 使用正则表达式匹配第一个单词
-                const regex = /([\S]+)([\s\S]*)/;
+                // const regex = /^(?:\s*)([\S]+)([\s\S]*)/;
+                const regex = /^([\S]+)(?:\r?\n)([\s\S]*)/;
                 const matches = content.match(regex);
                 let language = '';
                 let code = '';
@@ -399,12 +402,12 @@
                 if (languageName) {
                     codeTag.textContent = languageName;
                 } else {
-                    code = language + code;
+                    code = content;
                     codeTag.textContent = 'Code';
                 }
             
                 // 移除代码段开头和结尾的换行符, 不可以/^\s*/, 要保留前缀格式
-                code = code.replace(/^\n*/, '').trimEnd();
+                code = code.replace(/^(\r?\n)*/, '').trimEnd();
             
                 // 使用<div>标签包裹复制图标和<pre>标签
                 var container = document.createElement('div');
