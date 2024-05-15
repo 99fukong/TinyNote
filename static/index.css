@@ -124,6 +124,8 @@ button[type="submit"] {
 
 pre {
   display: block;
+  white-space: pre-wrap;
+  word-wrap: break-word;
   font-family: monospace;
   unicode-bidi: isolate;
   white-space: pre;
