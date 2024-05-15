@@ -36,6 +36,7 @@ body {
   cursor: pointer; /* 设置鼠标悬停时的样式为手型 */
   margin: 0; 
 }
+
 /* 保存按钮*/
 button[type="submit"] {
   padding: 9px 10px; /* 调整按钮的内边距 */
@@ -123,22 +124,19 @@ button[type="submit"] {
 }
 
 pre {
-  display: block;
   white-space: pre-wrap;
   word-wrap: break-word;
-  font-family: monospace;
-  unicode-bidi: isolate;
-  white-space: pre;
+  color: white;
   margin: 0em 0px; 
 }
 
 .LogContent {
   white-space: pre-wrap;
   word-wrap: break-word;
-  /* padding: 2px;  */
+  padding: 2px; 
   margin-top: 10px;
   /* 设置上边距为 10 像素 */
-  margin-bottom: 10px;
+  /* margin-bottom: 10px; */
   /* 设置下边距为 10 像素 */
   width: 100%;
   font-size: 1rem;
