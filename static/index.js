@@ -177,7 +177,6 @@
                 var Matches = [];
                 // const codeBlockLinesPattern = {regex:/[\t\x20]{2,}(?!\\)```([\s\S]*?)```(?:$|[\x20]*\n)(?!\n)/gi, type: 'codeBlockBetweenLines'}
                 // const codeBlockLinesPattern = {regex:/(?!\\)```([\s\S]*?)```(?:$|[\x20]*\n)/gi, type: 'codeBlockBetweenLines'}
-                // /(?:^|\n)```([\s\S]*?)```(?:\n|$)/g;
                 // const codeBlockLinesPattern = {regex:/(?:\n|^)```([\s\S]*?)```/gi, type: 'codeBlockBetweenLines'}
                 const codeBlockLinesPattern = {regex:/(?:^|\r?\n)```([\s\S]*?)(?:\r?\n?)```(?:\r?\n|$)/gi, type: 'codeBlockBetweenLines'}
                 const inlinePattern = {regex:/(?<!``)(`[^`]+`)/g, type: 'inLinecodeBlock'}
@@ -388,7 +387,8 @@
             
                 // 使用正则表达式匹配第一个单词
                 // const regex = /^(?:\s*)([\S]+)([\s\S]*)/;
-                const regex = /^([\S]+)(?:\r?\n)([\s\S]*)/;
+                // const regex = /^([\S]+)(?:\r?\n)([\s\S]*)/;
+                const regex = /^([\S]*)(?:\r?\n)([\s\S]*)/;
                 const matches = content.match(regex);
                 let language = '';
                 let code = '';
