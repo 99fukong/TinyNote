@@ -1,5 +1,6 @@
 html{
-  font-size: 16px;
+  /* font-size: 16px; */
+  font-size:17.6px
 }
 
 * {
@@ -201,6 +202,10 @@ pre {
   border-radius: 2px;
 }
 
+.codeTag{
+  color: rgb(203, 248, 40);
+}
+
 /* 设置超链接的默认样式 */
 a {
   color: rgb(136, 255, 0) ; /* 设置超链接的默认颜色 */
@@ -220,6 +225,7 @@ a:hover {
   right: 0; /* 将 left 修改为 right */
   width: 90px;
 }
+
 
 
 /* 悬浮窗口样式 */
