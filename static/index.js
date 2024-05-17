@@ -537,7 +537,8 @@
 
             // 创建三个点图标
             const ellipsisIcon = document.createElement('span');
-            ellipsisIcon.innerHTML = '&#8942;';
+            // ellipsisIcon.innerHTML = '&#8942;';
+            ellipsisIcon.innerHTML = '&hellip;';
             ellipsisIcon.classList.add('ellipsis-icon');
 
             //创建悬浮窗口

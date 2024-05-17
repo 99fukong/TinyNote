@@ -112,6 +112,8 @@ button[type="submit"] {
   align-items: center;
   justify-content: space-between;
   display: flex;
+  background-color:#3f3f46;
+
 }
 
 .code-container{
@@ -128,15 +130,16 @@ pre {
   word-wrap: break-word;
   color: white;
   margin: 0em 0px; 
+  background-color:#353333
 }
 
 .LogContent {
   white-space: pre-wrap;
   word-wrap: break-word;
   padding: 2px; 
-  margin-top: 10px;
+  /* margin-top: 10px; */
   /* 设置上边距为 10 像素 */
-  /* margin-bottom: 10px; */
+  margin-bottom: 10px;
   /* 设置下边距为 10 像素 */
   width: 100%;
   font-size: 1rem;
@@ -215,7 +218,7 @@ a:hover {
    z-index: 1000;
   top: 0; 
   right: 0; /* 将 left 修改为 right */
-  width: 80px;
+  width: 90px;
 }
 
 
@@ -223,7 +226,7 @@ a:hover {
 .popup {
   z-index: 1000; /* 确保它在顶层 */
   display: none; /* 默认不显示 */
-  /*display: inline-block; /* 将元素显示为块级元素*/ 
+  /*display: inline-block; /* 将元素显示为块级元素 */
   width: 60px;
 }
 
@@ -242,15 +245,13 @@ a:hover {
 }
 
 
-/* 三个点图标样式 */
 .ellipsis-icon {
-  position: absolute; /*绝对定位*/
-  right: 5px;
-  top: 5px;
+  position: absolute;
+  right: 10px;
+  top: -10px;
   cursor: pointer;
-  padding: 0 0px; /* 如果需要添加内边距的话 */
-  border: 5px solid transparent; /* 添加透明外边框 */
+  padding: 0 0px; /* 内边距 */
+  /* border: 5px solid transparent; */
   border-radius: 6px;
-  font-size: 28px; /* 修改为你想要的大小 */
-  
+  font-size: 28px; 
 }
