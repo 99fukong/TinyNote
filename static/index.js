@@ -68,7 +68,7 @@
     .then(diaries => {
         // 遍历日记列表
         diaries.forEach(diary => {
-            // debugger;
+            
             var content = diary.content;
 
             // 创建 LogContent-list 元素
@@ -78,16 +78,14 @@
             //创建 LogContent 元素
             // var LogContent = document.createElement('div');
             // LogContent.classList.add('LogContent');
-            // debugger;
+            
             // processLogEntryText2(content);
-            // debugger;
+            
             // // LogContent.textContent = content;
 
             var LogContent = document.createElement('div');
             LogContent.classList.add('LogContent');
-            //debugger;
             var logText = content;
-            debugger;
             processLogEntryText2(logText);
 
 
@@ -518,7 +516,7 @@
 
             // 添加事件监听器以复制代码块内容
             let codeBlockDivs = LogContent.querySelectorAll('.code-block-container');
-            // // debugger;
+            // 
             
             codeBlockDivs.forEach(codeBlockDiv => {
                 let SvgButton = codeBlockDiv.querySelector('.copy-button')
