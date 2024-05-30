@@ -190,11 +190,9 @@
 
 
                 //LogContent.empty()
-                debugger
                 LogContent.innerHTML = ''; // 清空当前元素内容
                 Matches.forEach(match => {
                     let element;
-                    debugger
                     switch (match.type) {
                     case 'text':
                         element = document.createElement('span');
@@ -202,7 +200,6 @@
                         break;
                     case 'codeBlockBetweenLines':
                         element = createCodeBlockBetweenLinesElement(match.content)
-                        debugger
                         break;
                     case 'inLinecodeBlock':
                         element = createInLinecodeBlockElement(match.content)
