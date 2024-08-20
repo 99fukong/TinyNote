@@ -177,10 +177,13 @@
                 // const codeBlockLinesPattern = {regex:/(?!\\)```([\s\S]*?)```(?:$|[\x20]*\n)/gi, type: 'codeBlockBetweenLines'}
                 // const codeBlockLinesPattern = {regex:/(?:\n|^)```([\s\S]*?)```/gi, type: 'codeBlockBetweenLines'}
                 const codeBlockLinesPattern = {regex:/(?:^|\r?\n)```([\s\S]*?)(?:\r?\n?)```(?:\r?\n|$)/gi, type: 'codeBlockBetweenLines'}
-                const inlinePattern = {regex:/(?<!``)(`[^`]+`)/g, type: 'inLinecodeBlock'}
+                // const inlinePattern = {regex:/(?<!``)(`[^`]+`)/g, type: 'inLinecodeBlock'}
+                const inlinePattern = {regex:/(?:^|[^`])(`[^`]+`)/g, type: 'inLinecodeBlock'}
                 const otherPatterns = [
                     // {regex:/((?<![##])[##]{1}(?![##])[/\w\u4e00-\u9fff]+(?=[\x20\n]|$))/g, type: 'tag'},
-                    {regex:/((?<![#])[#]{1}[/\w\u4e00-\u9fff]+(?![#]))/g, type: 'tag'},
+                    // {regex:/((?<![#])[#]{1}[/\w\u4e00-\u9fff]+(?![#]))/g, type: 'tag'},
+                    // {regex:/(?:^|\x20)([#＃](?:[/\w\u4e00-\u9fff]+))(?=[\x20\n]|$)/g, type: 'tag'},
+                    {regex:/((?=[#])[#]{1}[/\w\u4e00-\u9fff]+(?=[\x20\n]|$))/g, type: 'tag'},
                     // {regex:/(https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?&/=]*))/g, type: 'url'},
                     {regex:/(https?:\/\/(?:[a-zA-Z0-9.-]+|\d{1,3}(?:\.\d{1,3}){3})(?::\d+)?(?:\/[-a-zA-Z0-9@:%_\+.~#?&/=]*)?)/g, type: 'url'},
                     // {regex:/(?:\s|\r?\n)*?\$\$([\s\S]*?)\$\$(?:\s|\r?\n)*?/g, type: 'MulLineslatex'},
