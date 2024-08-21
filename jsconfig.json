@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+      "baseUrl": "./",
+      "paths": {
+        "/static/*": ["./static/*"]
+      }
+    },
+    "exclude": ["node_modules"]
+}

@@ -13,15 +13,8 @@ services:
       - ./:/app
     depends_on:
       - mysql
-    # environment:
-    #   MYSQL_HOST: mysql
-    #   MYSQL_USER: root
-    #   MYSQL_PASSWORD: 123456
-    #   MYSQL_DB: diary_db
     restart: always
     command : sh -c "pip install pymysql && python /app/houtai.py"
-    # command: >
-    #   sh -c "python -m debugpy --listen 0.0.0.0:5678 --wait-for-client  /app/houtai.py"
     networks:
       - net
 
