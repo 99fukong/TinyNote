@@ -69,7 +69,7 @@ button[type="submit"] {
 }
 
 /* 日记块 */
-.LogContent { 
+.log_entry { 
   width: 100%;
   font-size: 20px;
   border: 2px solid hsl(240, 2%, 9%); /* 设置边框样式 */
@@ -139,7 +139,7 @@ pre {
   background-color: rgb(63, 63, 70);
 }
 
-.LogContent {
+.log_entry {
   white-space: pre-wrap;
   word-wrap: break-word;
   padding: 2px; 

@@ -9,6 +9,10 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
     <link rel="icon" type="image/png" href="static/img/favicon-32x32.png">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
+    <!-- 引入 KaTeX 样式 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.11/katex.min.css">
+    <!-- 引入 KaTeX 脚本 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.11/katex.min.js"></script>
     <!-- 网站开启对 web app 程序的支持 具体表现为去除浏览器地址栏和底部导航栏 -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <!-- 用来定义顶部状态栏的形式 -->
@@ -44,7 +48,8 @@
     </div>
 
     <!-- 引入样式表 -->
-    <script src="static/index.js"></script>
+    <!-- 指定script标签的type为module -->
+    <script type="module" src="static/index.js"></script>
 
 </body>
 </html>
