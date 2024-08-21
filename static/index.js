@@ -28,14 +28,6 @@ document.addEventListener('DOMContentLoaded', function () {
 // 从本地存储获取令牌
 const token = localStorage.getItem('jwtToken');
 
-// 将URL替换为超链接的函数
-function replaceURLsWithLinks(pre_element) {
-    let content = pre_element.innerHTML;
-    let urlRegex = /(?<=^|\s)(https?:\/\/[^\s]+)/g;
-    content = content.replace(urlRegex, function (url) {
-        return '<a href="' + url + '">' + url + '</a>';
-    });
-}
 
 // 获取日记列表元素
 const diaryList = document.getElementById('diary-list');
@@ -76,7 +68,6 @@ fetch('/get_diaries', {
             // 创建 log_entry-list 元素
             var LogDiv = document.createElement('div');
             LogDiv.classList.add('LogDiv');
-
             var log_entry = document.createElement('div');
             log_entry.classList.add('log_entry');
             log_entry.textContent = content;
