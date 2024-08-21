@@ -29,7 +29,8 @@
     // 将URL替换为超链接的函数
     function replaceURLsWithLinks(pre_element) {
         let content = pre_element.innerHTML;
-        let urlRegex = /(?<=^|\s)(https?:\/\/[^\s]+)/g;
+        // let urlRegex = /(?<=^|\s)(https?:\/\/[^\s]+)/g;
+        let urlRegex = /https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?&/=]*)/g;
         content = content.replace(urlRegex, function (url) {
             return '<a href="' + url + '">' + url + '</a>';
         });
