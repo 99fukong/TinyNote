@@ -95,7 +95,7 @@ button[type="submit"] {
 }
 
 /* 设置代码块容器的样式 */
-.code-block-container {
+.code-container{
   position: relative; /* 相对定位，作为后续绝对定位元素的参考 */
   background-color: #1f1f1f; /* 设置背景色 */
 }

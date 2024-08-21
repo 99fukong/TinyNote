@@ -45,7 +45,7 @@ function processLogEntryText2(log_entry) {
         }
         log_entry.appendChild(element)//
     });        
-    // addCodeBlockCopyListener(log_entry)
+    addCodeBlockCopyListener(log_entry)
 }
 
 // Pattern 必须保证有一个分组
