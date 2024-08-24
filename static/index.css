@@ -225,21 +225,29 @@ a:hover {
 }
 
 .pop{
-  position: absolute; 
-   z-index: 1000;
-  top: 0; 
-  right: 0; /* 将 left 修改为 right */
+  position: absolute;
+  /* z-index: 1000; */
+  top: 0;
+  right: 0;
   width: 90px;
+  cursor: pointer;
 }
-
-
 
 /* 悬浮窗口样式 */
 .popup {
-  z-index: 1000; /* 确保它在顶层 */
-  display: none; /* 默认不显示 */
-  /*display: inline-block; /* 将元素显示为块级元素 */
-  width: 60px;
+  display: none;
+  position: absolute;
+  background-color: #444448;
+  border: 1px solid #27272A;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  /* padding: 8px 0; */
+  z-index: 1000;
+  /* 设置 z-index 以确保在其他元素上方显示 */
+  right: 0;
+  /* 保持菜单右对齐 */
+  min-width: 120px;
+  /* 设置最小宽度 */
+  /* top: calc(100% + 25px); */
 }
 
 .popup button { 
@@ -250,10 +258,11 @@ a:hover {
   /* border-radius: 5px;  */
   cursor: pointer; /* 设置鼠标样式为手型 */
   font-size: 1rem;
+  width: 100%;
 }
 
 .popup button:hover {
-  background-color: #aaa095; /* 设置鼠标悬停时的背景颜色 */
+  background-color: rgb(63, 63, 70); /* 设置鼠标悬停时的背景颜色 */
 }
 
 
@@ -266,4 +275,5 @@ a:hover {
   /* border: 5px solid transparent; */
   /* border-radius: 6px; */
   font-size: 28px; 
+  width: 30px;
 }

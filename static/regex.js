@@ -1,3 +1,4 @@
+import {addCodeBlockCopyListener} from '/static/codeCopy.js'
 //新代码
 function processLogEntryText2(log_entry) {
     // var textString = logText;

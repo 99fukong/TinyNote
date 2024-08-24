@@ -1,4 +1,5 @@
 import {processLogEntryText2} from '/static/regex.js';
+import {showNotification} from '/static/codeCopy.js'
 
 // 定义拉取函数
 function pullFromJianguoyun() {
@@ -85,27 +86,6 @@ fetch('/get_diaries', {
 
             //用超链接替换 ​​URL
             replaceURLsWithLinks(log_entry);
-            // 更新 log_entry 的内容
-            // log_entry.innerHTML = updatedContent;
-
-            // 添加事件监听器以复制代码块内容
-            let codeBlockDivs = log_entry.querySelectorAll('.code-container');
-            // 
-
-            codeBlockDivs.forEach(codeBlockDiv => {
-                let SvgButton = codeBlockDiv.querySelector('.copy-button')
-                let codeBlockSpan = codeBlockDiv.querySelector('.code-block');
-                if (SvgButton) {
-                    SvgButton.addEventListener('click', function (event) {
-                        navigator.clipboard.writeText(codeBlockSpan.textContent).then(() => {
-                            alert('代码已复制到剪贴板');
-                        }).catch(err => {
-                            console.error('复制失败', err);
-                        });
-                    });
-                }
-            });
-
 
             // 创建三个点图标
             const ellipsisIcon = document.createElement('span');
@@ -121,6 +101,16 @@ fetch('/get_diaries', {
             const pop = document.createElement('div');
             pop.classList.add('pop');
 
+            // 创建复制按钮
+            const copyButton = document.createElement('button');
+            copyButton.textContent = '复制';
+            copyButton.onclick = () => {
+                // 将日记内容复制到剪贴板
+                navigator.clipboard.writeText(content)
+                popup.style.display = 'none'; // 添加这行代码来隐藏悬浮窗
+                showNotification('Copy Success!', 700)
+            };
+            popup.appendChild(copyButton);
 
             // 创建编辑按钮
             const editButton = document.createElement('button');
@@ -131,17 +121,6 @@ fetch('/get_diaries', {
                 popup.style.display = 'none'; // 添加这行代码来隐藏悬浮窗
             };
             popup.appendChild(editButton);
-
-
-            // 创建复制按钮
-            const copyButton = document.createElement('button');
-            copyButton.textContent = '复制';
-            copyButton.onclick = () => {
-                // 将日记内容复制到剪贴板
-                navigator.clipboard.writeText(content)
-                popup.style.display = 'none'; // 添加这行代码来隐藏悬浮窗
-            };
-            popup.appendChild(copyButton);
 
             // 创建删除按钮
             const delButton = document.createElement('button');
@@ -187,32 +166,15 @@ fetch('/get_diaries', {
                 popup.style.display = 'block'; // 显示悬浮窗
             });
 
+            ellipsisIcon.addEventListener('mouseenter', function (event) {
+                // clearTimeout(hidePopupTimeout);
+                popup.style.display = 'block'; // 显示悬浮窗
+            });
+
             // 当鼠标移开三个点图标时隐藏悬浮窗
-            ellipsisIcon.addEventListener('mouseleave', function (event) {
-                // 延时隐藏悬浮窗，给用户时间从图标移到悬浮窗上
-                hidePopupTimeout = setTimeout(() => {
-                    if (!popup.contains(document.activeElement)) { // 检查悬浮窗内部是否有获得焦点的元素
-                        popup.style.display = 'none';
-                        // popup.style.display = 'block'; 
-
-                    }
-                }, 500); // 延时300毫秒，可根据需要调整
-            });
-
-            // 当鼠标进入悬浮窗时取消隐藏悬浮窗的延时
-            popup.addEventListener('mouseenter', function (event) {
-                clearTimeout(hidePopupTimeout);
-            });
-
-            // 当鼠标离开悬浮窗时重新设置隐藏悬浮窗的延时
             popup.addEventListener('mouseleave', function (event) {
-                hidePopupTimeout = setTimeout(() => {
-                    popup.style.display = 'none';
-                    // popup.style.display = 'block';
-                }, 500); // 延时300毫秒，可根据需要调整
+                popup.style.display = 'none'; // 显示悬浮窗
             });
-
-
         });
     })
     .catch(error => console.error('Error:', error));
