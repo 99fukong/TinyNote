@@ -217,9 +217,9 @@ function createCodeBlockBetweenLinesElement(content){
     if (languageName){
         // copyIcon.find('span').text(languageName);
         codeTag.textContent = languageName;
-    } else if(language) {
+    } else if(lowerCaseLanguage) {
         // use match to replace language with languageName
-        codeTag.textContent = 'Code';
+        codeTag.textContent = lowerCaseLanguage;
     }
 
     // 移除代码段开头和结尾的换行符, 不可以/^\s*/, 要保留前缀格式
