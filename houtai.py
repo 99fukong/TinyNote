@@ -26,8 +26,6 @@ BASE_URL = os.environ.get('BASE_URL')
 AUTH_USER = os.environ.get('AUTH_USER')
 AUTH_PASSWORD = os.environ.get('AUTH_PASSWORD')
 BIJIBEN = os.environ.get('BIJIBEN')
-USERNAME = os.environ.get('USERNAME')
-PASSWORD = os.environ.get('PASSWORD')
 
 if not BASE_URL:
     raise TypeError("变量 BASE_URL 不能为 空或None ")
