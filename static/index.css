@@ -247,7 +247,7 @@ a:hover {
   /* 保持菜单右对齐 */
   min-width: 120px;
   /* 设置最小宽度 */
-  /* top: calc(100% + 25px); */
+  top: calc(100% + 25px);
 }
 
 .popup button { 
