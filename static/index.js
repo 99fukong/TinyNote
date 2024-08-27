@@ -153,22 +153,18 @@ fetch('/get_diaries', {
             // 将 log_entry 和 ellipsisIcon 添加到 LogDiv 中
             LogDiv.appendChild(log_entry);
 
-
             // 将 pop 添加到 LogDiv 中
             LogDiv.appendChild(pop);
-
             // 将 LogDiv 添加到 diaryList 中
             diaryList.appendChild(LogDiv);
-
 
             // 当鼠标悬停在三个点图标上时显示悬浮窗
             ellipsisIcon.addEventListener('mouseenter', function (event) {
                 popup.style.display = 'block'; // 显示悬浮窗
             });
 
-            ellipsisIcon.addEventListener('mouseenter', function (event) {
-                // clearTimeout(hidePopupTimeout);
-                popup.style.display = 'block'; // 显示悬浮窗
+            ellipsisIcon.addEventListener('mouseleave', function(event){
+                popup.style.display = 'none';
             });
 
             // 当鼠标移开三个点图标时隐藏悬浮窗
@@ -180,9 +176,6 @@ fetch('/get_diaries', {
                 popup.style.display = 'block'; // 显示悬浮窗
             });
 
-            ellipsisIcon.addEventListener('mouseleave', function(event){
-                popup.style.display = 'none';
-            });
         });
     })
     .catch(error => console.error('Error:', error));
