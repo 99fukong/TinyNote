@@ -160,20 +160,20 @@ fetch('/get_diaries', {
 
             // 当鼠标悬停在三个点图标上时显示悬浮窗
             ellipsisIcon.addEventListener('mouseenter', function (event) {
-                popup.style.display = 'block'; // 显示悬浮窗
+                popup.style.display = 'block'; 
             });
-
+            // 当鼠标移开三个点图标时隐藏悬浮窗
             ellipsisIcon.addEventListener('mouseleave', function(event){
                 popup.style.display = 'none';
             });
 
-            // 当鼠标移开三个点图标时隐藏悬浮窗
+            // 当鼠标移开悬浮窗时隐藏悬浮窗
             popup.addEventListener('mouseleave', function (event) {
-                popup.style.display = 'none'; // 显示悬浮窗
+                popup.style.display = 'none'; 
             });
-            // 
+            // 当鼠标悬停在悬浮窗上时显示悬浮窗
             popup.addEventListener('mouseenter', function (event) {
-                popup.style.display = 'block'; // 显示悬浮窗
+                popup.style.display = 'block'; 
             });
 
         });
