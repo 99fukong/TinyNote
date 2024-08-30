@@ -8,7 +8,7 @@ function processLogEntryText2(log_entry) {
     const inlinePattern = {regex:/(?:^|[^`])(`[^`]+`)/g, type: 'inLinecodeBlock'}
 
     const otherPatterns = [
-        {regex:/(?:^|\x20)([#＃](?:[/\w\u4e00-\u9fff]+))(?=[\x20\n]|$)/g, type: 'tag'},
+        {regex:/(?:^|\x20)([#＃](?:[/\w\u4e00-\u9fff]+))(?=[\x20\n]|$)/gm, type: 'tag'},
         {regex:/(https?:\/\/(?:[a-zA-Z0-9.-]+|\d{1,3}(?:\.\d{1,3}){3})(?::\d+)?(?:\/[-a-zA-Z0-9@:%_\+.~#?&/=]*)?)/g, type: 'url'},
         {regex:/(?:[\x20]*\r?\n?|\r?\n[\x20]*)(\$\$[\s\S]*?\$\$)(?:$|[\x20]*\r?\n?)/g, type: 'MulLineslatex'},
         {regex:/((\$|\\\[|\\\()[\s\S]*?(\$|\\\]|\\\)))/g, type: 'InLineslatex'},
