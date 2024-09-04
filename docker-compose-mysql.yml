@@ -20,7 +20,6 @@ services:
 
   mysql:
     image: mysql:8.0
-    user: $DOCKER_USER
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: 123456
@@ -35,10 +34,15 @@ services:
     ports:
      - "3306:3306"
     volumes:
-      - ./mysql/data:/var/lib/mysql:rw
-      - ./mysql/config:/etc/mysql/conf.d:rw
+      - mysql_data:/var/lib/mysql:rw
+      - mysql_conf:/etc/mysql/conf.d:rw
     networks:
       - net
+volumes:
+  mysql_data:
+    driver: local
+  mysql_conf:
+    driver: local
 
 networks:
   net:
